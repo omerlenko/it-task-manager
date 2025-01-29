@@ -17,7 +17,7 @@ class Worker(AbstractUser):
         verbose_name_plural = "workers"
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}, {self.position.name}"
+        return f"{self.first_name} {self.last_name}, {self.position.name if self.position else ""} "
 
 class TaskType(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -41,4 +41,4 @@ class Task(models.Model):
     assignees = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="tasks")
 
     def __str__(self):
-        return {self.name}
+        return self.name
