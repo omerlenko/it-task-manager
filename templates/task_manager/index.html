@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% if user.authenticated %}
+    <h1>Welcome back</h1>
+  {% else %}
+    <h1>Welcome to the Task Manager, log in to start adding tasks!</h1>
+  {% endif %}
+{#  {% if pending_tasks %}#}
+{#  <p>#}
+{#    Pending tasks:#}
+{#  </p>#}
+{#  <ul>#}
+{#  {% for task in pending_tasks %}#}
+{#    <li>#}
+{#      {{ task.name }}#}
+{#    </li>#}
+{#  {% endfor %}#}
+{#  </ul>#}
+{#  {% else %}#}
+{#  <p>#}
+{#    There are no pending tasks#}
+{#  </p>#}
+{#  {% endif %}#}
+{#  {{ pending_tasks }}#}
+{#    Completed tasks: {{ completed_tasks }}#}
+
+{% endblock %}
