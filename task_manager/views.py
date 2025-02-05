@@ -1,7 +1,9 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.views import generic
 
-from task_manager.models import Worker
+from task_manager.models import Worker, Task
 
 
 def index(request) -> HttpResponse:
@@ -15,3 +17,8 @@ def index(request) -> HttpResponse:
     }
 
     return render(request, "task_manager/index.html", context)
+
+
+class TaskListView(LoginRequiredMixin, generic.ListView):
+    model = Task
+    # paginate_by = 10
