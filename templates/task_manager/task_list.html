@@ -11,7 +11,7 @@
             <div class="card shadow-sm mb-4">
               <div class="card-body">
                 <h5 class="card-title">
-                  <a href="#" class="text-decoration-none text-dark">
+                  <a href="{% url "task_manager:task-detail" pk=task.id %}" class="text-decoration-none text-dark">
                     {{ task.name }}
                   </a>
                 </h5>
