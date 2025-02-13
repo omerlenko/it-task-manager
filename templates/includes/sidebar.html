@@ -1,6 +1,6 @@
 <nav class="col-md-3 col-lg-2 d-md-block bg-dark text-white sidebar vh-100">
   <div class="position-sticky">
-    <h3 class="p-3">Task Manager</h3>
+    <h3 class="p-3"><a href="{% url "task_manager:index" %}" class="nav-link text-white">Task Manager</a></h3>
 
     <ul class="nav flex-column">
 
@@ -12,13 +12,6 @@
           <a class="nav-link text-white" href="{% url "task_manager:task-list" %}">All Tasks</a>
         </li>
       </div>
-
-{#      <li class="nav-item">#}
-{#        <a class="nav-link text-white" href="#">Task Types</a>#}
-{#      </li>#}
-{#      <li class="nav-item">#}
-{#        <a class="nav-link text-white" href="#">Positions</a>#}
-{#      </li>#}
       <div>
         {% if user.is_authenticated %}
           <li class="nav-item">
