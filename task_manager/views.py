@@ -46,3 +46,8 @@ class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
         return reverse_lazy("task_manager:task-detail", kwargs={"pk": self.object.pk})
 
 
+class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Task
+    success_url = reverse_lazy("task_manager:task-list")
+
+
