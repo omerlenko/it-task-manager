@@ -1,34 +1,42 @@
 <nav class="col-md-3 col-lg-2 d-md-block bg-dark text-white sidebar vh-100">
   <div class="position-sticky">
     <h3 class="p-3">Task Manager</h3>
+
     <ul class="nav flex-column">
-      {% if user.is_authenticated %}
-      <li class="nav-item">
-        <a class="nav-link text-white" href="#">My profile</a>
-      </li>
-      <li class="nav-item mb-4">
-        <form action="{% url "logout" %}" method="post">
-          {% csrf_token %}
-          <button type="submit" class="nav-link text-white">Log out</button>
-        </form>
-      </li>
-      {% else %}
-        <li class="nav-item mb-4">
-          <a class="nav-link text-white" href="{% url "login" %}">Log in</a>
+
+      <div class="mb-4">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url "task_manager:index" %}">Dashboard</a>
         </li>
-      {% endif %}
-      <li class="nav-item">
-        <a class="nav-link text-white" href="{% url "task_manager:index" %}">Dashboard</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white" href="{% url "task_manager:task-list" %}">Tasks</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white" href="#">Task Types</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white" href="#">Positions</a>
-      </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="{% url "task_manager:task-list" %}">All Tasks</a>
+        </li>
+      </div>
+
+{#      <li class="nav-item">#}
+{#        <a class="nav-link text-white" href="#">Task Types</a>#}
+{#      </li>#}
+{#      <li class="nav-item">#}
+{#        <a class="nav-link text-white" href="#">Positions</a>#}
+{#      </li>#}
+      <div>
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#">My profile</a>
+          </li>
+          <li class="nav-item mb-4 btn btn-danger">
+            <form action="{% url "logout" %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="nav-link text-white">Log out</button>
+            </form>
+          </li>
+        {% else %}
+          <li class="nav-item mb-4 btn btn-primary">
+            <a class="nav-link text-white" href="{% url "login" %}">Log in</a>
+          </li>
+        {% endif %}
+      </div>
+
     </ul>
   </div>
 </nav>
