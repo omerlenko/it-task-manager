@@ -1,8 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views import generic
 
+from task_manager.forms import TaskForm
 from task_manager.models import Worker, Task
 
 
@@ -26,3 +28,11 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
     model = Task
+
+
+class TaskCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Task
+    form_class = TaskForm
+
+    def get_success_url(self):
+        return reverse_lazy("task_manager:task-detail", kwargs={"pk": self.object.pk})
