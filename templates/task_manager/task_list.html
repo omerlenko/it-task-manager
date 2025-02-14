@@ -17,7 +17,7 @@
                 </h5>
 
                 <div class="d-flex">
-                  <span class="badge me-auto
+                  <span class="badge me-2
                     {% if task.priority == "Urgent" %} bg-danger
                     {% elif task.priority == "High" %} bg-warning
                     {% elif task.priority == "Medium" %} bg-primary
@@ -39,9 +39,18 @@
 
 
                 <div class="mt-5 d-flex gap-2">
-                  <a href="{% url "task_manager:task-update" pk=task.id %}" class="btn btn-success btn-sm me-auto">Approve</a>
-                  <a href="{% url "task_manager:task-update" pk=task.id %}" class="btn btn-outline-dark btn-sm">Edit</a>
-                  <a href="{% url "task_manager:task-delete" pk=task.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+
+                  {% if task.is_completed %}
+                    <button type="submit" class="btn btn-outline-success me-auto" disabled>Completed</button>
+                  {% else %}
+                  <form method="post" action="{% url "task_manager:task-complete" pk=task.id %}" class="me-auto">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">Complete</button>
+                  </form>
+                  {% endif %}
+
+                  <a href="{% url "task_manager:task-update" pk=task.id %}" class="btn btn-outline-dark">Edit</a>
+                  <a href="{% url "task_manager:task-delete" pk=task.id %}" class="btn btn-outline-danger">Delete</a>
                 </div>
               </div>
             </div>

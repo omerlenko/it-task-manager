@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import generic
@@ -56,7 +56,7 @@ def index(request) -> HttpResponse:
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
     model = Task
-    # paginate_by = 10
+    paginate_by = 3
 
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
@@ -84,3 +84,8 @@ class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("task_manager:task-list")
 
 
+def complete_task(request, pk):
+    task = get_object_or_404(Task, id=pk)
+    task.is_completed = True
+    task.save()
+    return redirect("task_manager:task-list")
