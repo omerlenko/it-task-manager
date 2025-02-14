@@ -1,0 +1,26 @@
+.circle {
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    display: inline;
+}
+
+.clr-primary {
+    background-color: #0d6efd;
+}
+
+.clr-warning {
+    background-color: #ffc107;
+}
+
+.clr-success {
+    background-color: #198754;
+}
+
+.clr-danger {
+    background-color: #dc3545;
+}
+
+.clr-default {
+    background-color: #adb5bd;
+}
