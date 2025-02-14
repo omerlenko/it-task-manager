@@ -56,7 +56,7 @@ def index(request) -> HttpResponse:
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
     model = Task
-    paginate_by = 3
+    paginate_by = 9
 
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
