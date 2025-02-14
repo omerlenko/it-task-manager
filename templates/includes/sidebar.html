@@ -6,10 +6,10 @@
 
       <div class="mb-4">
         <li class="nav-item">
-          <a class="nav-link text-white" href="{% url "task_manager:index" %}">Dashboard</a>
+          <a class="nav-link text-white {% if request.resolver_match.url_name == "index" %} fw-bold {% endif %}" href="{% url "task_manager:index" %}">Dashboard</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" href="{% url "task_manager:task-list" %}">All Tasks</a>
+          <a class="nav-link text-white {% if request.resolver_match.url_name == "task-list" %} fw-bold {% endif %}" href="{% url "task_manager:task-list" %}">All Tasks</a>
         </li>
       </div>
       <div>
