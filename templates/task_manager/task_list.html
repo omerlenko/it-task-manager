@@ -29,14 +29,20 @@
                     {% if task.is_completed %} Completed {% else %} Pending {% endif %}
                   </span>
                 </div>
-
-
-
               </div>
+
               <div class="card-body">
                 <p class="card-text text-muted">{{ task.description }}</p>
 
-
+                <div>
+                  {% if task.assignees %}
+                    {% for worker in task.assignees.all %}
+                    <span class="badge bg-light text-dark">{{ worker.first_name }} {{ worker.last_name }}</span>
+                    {% endfor %}
+                  {% else %}
+                    <span>No one assigned yet!</span>
+                  {% endif %}
+                </div>
 
                 <div class="mt-5 d-flex gap-2">
 
@@ -59,7 +65,7 @@
       </div>
     {% else %}
       <p class="text-center text-muted">
-        No tasks here yet! <a href="#">Add one?</a>
+        No tasks here yet! <a href="{% url "task_manager:task-create" %}" class="btn btn-primary">Add one?</a>
       </p>
     {% endif %}
   </div>
