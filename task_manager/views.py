@@ -64,7 +64,34 @@ def index(request) -> HttpResponse:
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
     model = Task
-    paginate_by = 9
+    paginate_by = 8
+
+    def get_queryset(self):
+        queryset = Task.objects.all()
+
+        is_completed = self.request.GET.get("is_completed")
+        priority = self.request.GET.get("priority")
+        assignees = [a for a in self.request.GET.getlist("assignees") if a]
+
+        if is_completed:
+            queryset = queryset.filter(is_completed=is_completed)
+        if priority:
+            queryset = queryset.filter(priority=priority)
+        if assignees:
+            queryset = queryset.filter(assignees__id__in=assignees).distinct()
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["selected_is_completed"] = self.request.GET.get("is_completed", "")
+        context["selected_priority"] = self.request.GET.get("priority", "")
+        context["selected_assignees"] = self.request.GET.getlist("assignees", "")
+
+        context["users"] = Worker.objects.all()
+
+        return context
 
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
