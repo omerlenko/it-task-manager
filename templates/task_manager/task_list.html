@@ -2,71 +2,129 @@
 
 {% block content %}
   <div class="container mt-4">
-    <h2 class="mb-4 text-center">All Tasks</h2>
+{#    <h2 class="mb-4 text-center">All Tasks</h2>#}
+      <div class="row d-flex">
+        <div class="col-md-9 ">
+          <div class="card">
+            <div class="card-header text-center fs-3">All Tasks</div>
+            <div class="card-body">
+              <div class="row d-flex">
+                {% if task_list %}
+                {% for task in task_list %}
+                  <div class="col-md-6">
+                    <div class="card shadow-sm mb-4">
+                      <div class="card-header">
+                        <h5>
+                          <a href="{% url "task_manager:task-detail" pk=task.id %}" class="text-decoration-none text-dark">
+                            {{ task.name }}
+                          </a>
+                        </h5>
 
-    {% if task_list %}
-      <div class="row">
-        {% for task in task_list %}
-          <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm mb-4">
-              <div class="card-header">
-                <h5>
-                  <a href="{% url "task_manager:task-detail" pk=task.id %}" class="text-decoration-none text-dark">
-                    {{ task.name }}
-                  </a>
-                </h5>
+                        <div class="d-flex">
+                          <span class="badge me-2
+                              {% if task.priority == "Urgent" %} bg-danger
+                              {% elif task.priority == "High" %} bg-warning
+                              {% elif task.priority == "Medium" %} bg-primary
+                              {% else %} bg-secondary {% endif %}">
+                            {{ task.priority }}
+                          </span>
 
-                <div class="d-flex">
-                  <span class="badge me-2
-                    {% if task.priority == "Urgent" %} bg-danger
-                    {% elif task.priority == "High" %} bg-warning
-                    {% elif task.priority == "Medium" %} bg-primary
-                    {% else %} bg-secondary {% endif %}">
-                    {{ task.priority }}
-                  </span>
+                          <span class="badge {% if task.is_completed %} bg-success {% else %} bg-info {% endif %}">
+                            {% if task.is_completed %} Completed {% else %} Pending {% endif %}
+                          </span>
+                        </div>
+                      </div>
 
-                  <span class="badge {% if task.is_completed %} bg-success {% else %} bg-info {% endif %}">
-                    {% if task.is_completed %} Completed {% else %} Pending {% endif %}
-                  </span>
-                </div>
-              </div>
+                      <div class="card-body">
+                        <p class="card-text text-muted">{{ task.description }}</p>
 
-              <div class="card-body">
-                <p class="card-text text-muted">{{ task.description }}</p>
+                        <div>
+                          {% if task.assignees %}
+                            {% for worker in task.assignees.all %}
+                              <span class="badge bg-light text-dark">{{ worker.first_name }} {{ worker.last_name }}</span>
+                            {% endfor %}
+                          {% else %}
+                            <span>No one assigned yet!</span>
+                          {% endif %}
+                        </div>
 
-                <div>
-                  {% if task.assignees %}
-                    {% for worker in task.assignees.all %}
-                    <span class="badge bg-light text-dark">{{ worker.first_name }} {{ worker.last_name }}</span>
-                    {% endfor %}
-                  {% else %}
-                    <span>No one assigned yet!</span>
-                  {% endif %}
-                </div>
+                        <div class="mt-5 d-flex gap-2">
 
-                <div class="mt-5 d-flex gap-2">
+                          {% if task.is_completed %}
+                            <button type="submit" class="btn btn-outline-success me-auto" disabled>Completed</button>
+                          {% else %}
+                            <form method="post" action="{% url "task_manager:task-complete" pk=task.id %}" class="me-auto">
+                              {% csrf_token %}
+                              <button type="submit" class="btn btn-success">Complete</button>
+                            </form>
+                          {% endif %}
 
-                  {% if task.is_completed %}
-                    <button type="submit" class="btn btn-outline-success me-auto" disabled>Completed</button>
-                  {% else %}
-                  <form method="post" action="{% url "task_manager:task-complete" pk=task.id %}" class="me-auto">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-success">Complete</button>
-                  </form>
-                  {% endif %}
-
-                  <a href="{% url "task_manager:task-update" pk=task.id %}" class="btn btn-outline-dark">Edit</a>
-                  <a href="{% url "task_manager:task-delete" pk=task.id %}" class="btn btn-outline-danger">Delete</a>
-                </div>
+                          <a href="{% url "task_manager:task-update" pk=task.id %}" class="btn btn-outline-dark">Edit</a>
+                          <a href="{% url "task_manager:task-delete" pk=task.id %}" class="btn btn-outline-danger">Delete</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+                {% else %}
+                  <p class="text-center text-muted">
+                    No tasks here yet! <a href="{% url "task_manager:task-create" %}" class="btn btn-primary">Add one?</a>
+                  </p>
+                {% endif %}
               </div>
             </div>
           </div>
-        {% endfor %}
+        </div>
+
+      <div class="col-md-3">
+        <div class="card">
+          <div class="card-header text-center fs-3">Filters</div>
+          <div class="card-body">
+
+            <form method="GET" class="mb-3">
+
+              <div class="mb-3">
+{#                  <label for="is_completed" class="form-label">Status:</label>#}
+                <select name="is_completed" class="form-select">
+                  <option value="">Status</option>
+                  <option value="False" {% if selected_is_completed == "False" %}selected{% endif %}>Pending</option>
+                  <option value="True" {% if selected_is_completed == "True" %}selected{% endif %}>Completed</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+{#                <label for="priority" class="form-label">Priority:</label>#}
+                <select name="priority" class="form-select">
+                  <option value="">Priority</option>
+                  <option value="Low" {% if selected_priority == "Low" %}selected{% endif %}>Low</option>
+                  <option value="Medium" {% if selected_priority == "Medium" %}selected{% endif %}>Medium</option>
+                  <option value="High" {% if selected_priority == "High" %}selected{% endif %}>High</option>
+                  <option value="Urgent" {% if selected_priority == "Urgent" %}selected{% endif %}>Urgent</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="assignees" class="form-label">Assignees:</label>
+                <select name="assignees" multiple class="form-select">
+                  {% for user in users %}
+                    <option value="{{ user.id }}" {% if user.id|stringformat:"s" in selected_assignees %}selected{% endif %}>
+                      {{ user.first_name }} {{ user.last_name }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Apply</button>
+                <a href="{% url "task_manager:task-list" %}" class="btn btn-secondary">Reset</a>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="mt-4">
+          <a href="{% url "task_manager:task-create" %}" class="btn btn-primary">Add New Task</a>
+        </div>
       </div>
-    {% else %}
-      <p class="text-center text-muted">
-        No tasks here yet! <a href="{% url "task_manager:task-create" %}" class="btn btn-primary">Add one?</a>
-      </p>
-    {% endif %}
+    </div>
   </div>
 {% endblock %}
