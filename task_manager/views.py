@@ -1,8 +1,6 @@
 from datetime import timedelta
-from email.policy import default
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.db.models import When, Case, Value, IntegerField
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
