@@ -22,16 +22,18 @@
 
                         <div class="d-flex">
                           <span class="badge me-2
-                              {% if task.priority == "Urgent" %} bg-danger
-                              {% elif task.priority == "High" %} bg-warning
-                              {% elif task.priority == "Medium" %} bg-primary
+                              {% if task.priority == "1" %} bg-danger
+                              {% elif task.priority == "2" %} bg-warning
+                              {% elif task.priority == "3" %} bg-primary
                               {% else %} bg-secondary {% endif %}">
-                            {{ task.priority }}
+                            {{ task.get_priority_display }}
                           </span>
 
-                          <span class="badge {% if task.is_completed %} bg-success {% else %} bg-info {% endif %}">
+                          <span class="badge {% if task.is_completed %} bg-success {% else %} bg-info {% endif %} me-auto">
                             {% if task.is_completed %} Completed {% else %} Pending {% endif %}
                           </span>
+
+                          <span class="badge bg-secondary">{{ task.deadline|date:"M d" }}</span>
                         </div>
                       </div>
 
@@ -77,14 +79,15 @@
         </div>
 
       <div class="col-md-3">
-        <div class="card">
+        <div class="card mb-3" >
           <div class="card-header text-center fs-3">Filters</div>
           <div class="card-body">
 
             <form method="GET" class="mb-3">
 
+              <input type="hidden" name="sort" value="{{ selected_sort }}">
+
               <div class="mb-3">
-{#                  <label for="is_completed" class="form-label">Status:</label>#}
                 <select name="is_completed" class="form-select">
                   <option value="">Status</option>
                   <option value="False" {% if selected_is_completed == "False" %}selected{% endif %}>Pending</option>
@@ -93,13 +96,12 @@
               </div>
 
               <div class="mb-3">
-{#                <label for="priority" class="form-label">Priority:</label>#}
                 <select name="priority" class="form-select">
                   <option value="">Priority</option>
-                  <option value="Low" {% if selected_priority == "Low" %}selected{% endif %}>Low</option>
-                  <option value="Medium" {% if selected_priority == "Medium" %}selected{% endif %}>Medium</option>
-                  <option value="High" {% if selected_priority == "High" %}selected{% endif %}>High</option>
-                  <option value="Urgent" {% if selected_priority == "Urgent" %}selected{% endif %}>Urgent</option>
+                  <option value="4" {% if selected_priority == "4" %}selected{% endif %}>Low</option>
+                  <option value="3" {% if selected_priority == "3" %}selected{% endif %}>Medium</option>
+                  <option value="2" {% if selected_priority == "2" %}selected{% endif %}>High</option>
+                  <option value="1" {% if selected_priority == "1" %}selected{% endif %}>Urgent</option>
                 </select>
               </div>
 
@@ -121,6 +123,34 @@
             </form>
           </div>
         </div>
+
+        <div class="card">
+          <div class="card-header text-center fs-3">Sort</div>
+          <div class="card-body">
+
+            <form method="GET" class="mb-3">
+              <input type="hidden" name="is_completed" value="{{ selected_is_completed }}">
+              <input type="hidden" name="priority" value="{{ selected_priority }}">
+              {% for assignee in selected_assignees %}
+                <input type="hidden" name="assignees" value="{{ assignees }}">
+              {% endfor %}
+
+              <div class="mb-3">
+                <select name="sort" class="form-select" onchange="this.form.submit()">
+                  <option value="">Sort By</option>
+                  <option value="priority_desc" {% if selected_sort == "priority_desc" %}selected{% endif %}>Priority (Urgent → Low)</option>
+                  <option value="priority_asc" {% if selected_sort == "priority_asc" %}selected{% endif %}>Priority (Low → Urgent)</option>
+                  <option value="status_desc" {% if selected_sort == "status_desc" %}selected{% endif %}>Status (Completed first)</option>
+                  <option value="status_asc" {% if selected_sort == "status_asc" %}selected{% endif %}>Status (Pending first)</option>
+                  <option value="deadline_asc" {% if selected_sort == "deadline_asc" %}selected{% endif %}>Deadline (Soonest first)</option>
+                  <option value="deadline_desc" {% if selected_sort == "deadline_desc" %}selected{% endif %}>Deadline (Farthest first)</option>
+                </select>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
         <div class="mt-4">
           <a href="{% url "task_manager:task-create" %}" class="btn btn-primary">Add New Task</a>
         </div>
