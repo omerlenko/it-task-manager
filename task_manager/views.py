@@ -1,7 +1,9 @@
 from datetime import timedelta
+from email.policy import default
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.db.models import When, Case, Value, IntegerField
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -24,10 +26,10 @@ def index(request) -> HttpResponse:
     pending_tasks = user.tasks.filter(is_completed=False).count()
     completed_tasks = user.tasks.filter(is_completed=True).count()
 
-    urgent_tasks = user.tasks.filter(priority='Urgent').count()
-    high_tasks = user.tasks.filter(priority='High').count()
-    medium_tasks = user.tasks.filter(priority='Medium').count()
-    low_tasks = user.tasks.filter(priority='Low').count()
+    urgent_tasks = user.tasks.filter(priority="1").count()
+    high_tasks = user.tasks.filter(priority="2").count()
+    medium_tasks = user.tasks.filter(priority="3").count()
+    low_tasks = user.tasks.filter(priority="4").count()
 
     task_priority_counts = {
         "Urgent": urgent_tasks,
@@ -80,6 +82,29 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
         if assignees:
             queryset = queryset.filter(assignees__id__in=assignees).distinct()
 
+        sort_option = self.request.GET.get("sort")
+        today = timezone.now().date()
+
+        sort_mapping = {
+            "priority_desc": "priority",
+            "priority_asc": "-priority",
+            "status_desc": "-is_completed",
+            "status_asc": "is_completed",
+            "deadline_desc": "-deadline",
+
+        }
+        if sort_option == "deadline_asc":
+            queryset = queryset.annotate(
+                expired=Case(
+                    When(deadline__lt=today, then=Value(1),),
+                    default=Value(0),
+                    output_field=IntegerField(),
+                )
+            ).order_by("expired", "deadline")
+
+        elif sort_option in sort_mapping:
+            queryset = queryset.order_by(sort_mapping[sort_option])
+
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -90,6 +115,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
         context["selected_assignees"] = self.request.GET.getlist("assignees", "")
 
         context["users"] = Worker.objects.all()
+        context["selected_sort"] = self.request.GET.get("sort", "")
 
         return context
 
