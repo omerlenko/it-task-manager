@@ -32,10 +32,10 @@ def index(request) -> HttpResponse:
     low_tasks = user.tasks.filter(priority="4").count()
 
     task_priority_counts = {
-        "Urgent": urgent_tasks,
-        "High": high_tasks,
-        "Medium": medium_tasks,
-        "Low": low_tasks,
+        "1": urgent_tasks,
+        "2": high_tasks,
+        "3": medium_tasks,
+        "4": low_tasks,
     }
 
     upcoming_deadlines = user.tasks.filter(deadline__lte=timezone.now() + timedelta(days=3), is_completed=False).order_by("deadline")
@@ -49,7 +49,7 @@ def index(request) -> HttpResponse:
     weekly_completion_percentage = round(weekly_completed_tasks / weekly_total_tasks * 100 if weekly_total_tasks else 0)
 
     context = {
-        "selected_user": user,
+        "selected_user": user.id,
         "users": users,
         "total_tasks": total_tasks,
         "pending_tasks": pending_tasks,
@@ -118,6 +118,11 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
         context["selected_sort"] = self.request.GET.get("sort", "")
 
         return context
+
+    def request_get(self):
+        rq = self.request.GET.copy()
+        rq.pop(self.page_kwarg, None)
+        return rq.urlencode()
 
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
