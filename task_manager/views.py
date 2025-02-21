@@ -1,14 +1,14 @@
 from datetime import timedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import When, Case, Value, IntegerField
+from django.db.models import When, Case, Value, IntegerField, Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import generic
 
-from task_manager.forms import TaskForm
+from task_manager.forms import TaskForm, TaskSearchForm
 from task_manager.models import Task, Worker
 
 
@@ -69,6 +69,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         queryset = Task.objects.all()
 
+        # Filtering
         is_completed = self.request.GET.get("is_completed")
         priority = self.request.GET.get("priority")
         assignees = [a for a in self.request.GET.getlist("assignees") if a]
@@ -80,6 +81,17 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
         if assignees:
             queryset = queryset.filter(assignees__id__in=assignees).distinct()
 
+        # Search
+        form = TaskSearchForm(self.request.GET)
+        if form.is_valid():
+            search_query = form.cleaned_data["search"]
+            if search_query:
+                queryset = queryset.filter(
+                    Q(name__icontains=search_query) |
+                    Q(description__icontains=search_query)
+                )
+
+        # Sorting
         sort_option = self.request.GET.get("sort")
         today = timezone.now().date()
 
@@ -111,6 +123,10 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
         context["selected_is_completed"] = self.request.GET.get("is_completed", "")
         context["selected_priority"] = self.request.GET.get("priority", "")
         context["selected_assignees"] = self.request.GET.getlist("assignees", "")
+
+        search = self.request.GET.get("search", "")
+        context["search_form"] = TaskSearchForm(initial={"search": search})
+        context["search_query"] = search
 
         context["users"] = Worker.objects.all()
         context["selected_sort"] = self.request.GET.get("sort", "")
