@@ -12,3 +12,10 @@ class TaskForm(forms.ModelForm):
         widgets = {
             "deadline": forms.DateTimeInput(attrs={"type": "date", "class": "form-control"}),
         }
+
+class TaskSearchForm(forms.Form):
+    search = forms.CharField(
+        required=False,
+        label="",
+        widget=forms.TextInput(attrs={"placeholder": "Search tasks...", "class": "form-control"}),
+    )
