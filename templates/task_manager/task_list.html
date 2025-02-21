@@ -2,12 +2,27 @@
 
 {% block content %}
   <div class="container mt-4">
-{#    <h2 class="mb-4 text-center">All Tasks</h2>#}
       <div class="row d-flex">
         <div class="col-md-9 ">
           <div class="card">
             <div class="card-header text-center fs-3">All Tasks</div>
             <div class="card-body">
+              <div>
+                <form method="GET" class="mb-3">
+                  <div class="input-group">
+                    {{ search_form.search }}
+
+                    <input type="hidden" name="is_completed" value="{{ selected_is_completed }}">
+                    <input type="hidden" name="priority" value="{{ selected_priority }}">
+                    {% for assignee in selected_assignees %}
+                      <input type="hidden" name="assignees" value="{{ assignee }}">
+                    {% endfor %}
+                    <input type="hidden" name="sort" value="{{ selected_sort }}">
+
+                    <button type="submit" class="btn btn-primary">Search</button>
+                  </div>
+                </form>
+              </div>
               <div class="row d-flex">
                 {% if task_list %}
                 {% for task in task_list %}
@@ -86,6 +101,7 @@
             <form method="GET" class="mb-3">
 
               <input type="hidden" name="sort" value="{{ selected_sort }}">
+              <input type="hidden" name="search" value="{{ search_query }}">
 
               <div class="mb-3">
                 <select name="is_completed" class="form-select">
@@ -129,10 +145,11 @@
           <div class="card-body">
 
             <form method="GET" class="mb-3">
+              <input type="hidden" name="search" value="{{ search_query }}">
               <input type="hidden" name="is_completed" value="{{ selected_is_completed }}">
               <input type="hidden" name="priority" value="{{ selected_priority }}">
               {% for assignee in selected_assignees %}
-                <input type="hidden" name="assignees" value="{{ assignees }}">
+                <input type="hidden" name="assignees" value="{{ assignee }}">
               {% endfor %}
 
               <div class="mb-3">
