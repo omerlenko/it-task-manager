@@ -25,6 +25,14 @@ class TaskType(models.Model):
     def __str__(self):
         return self.name
 
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Task(models.Model):
     class Priority(models.TextChoices):
         URGENT = "1", "Urgent"
@@ -39,6 +47,7 @@ class Task(models.Model):
     priority = models.CharField(max_length=1, choices=Priority, default=Priority.MEDIUM)
     task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
     assignees = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="tasks")
+    tags = models.ManyToManyField(Tag, blank=True, related_name="tasks")
 
     def __str__(self):
         return self.name
