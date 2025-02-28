@@ -59,7 +59,9 @@
                           <span class="text-muted">Assignees: </span>
                           {% if task.assignees %}
                             {% for worker in task.assignees.all %}
-                              <span class="badge bg-light text-dark"> {{ worker.first_name }} {{ worker.last_name }}</span>
+                              <span class="badge bg-light text-dark">
+                                <a class="text-decoration-none text-dark" href="{% url "task_manager:worker-detail" worker.id %}">{{ worker.first_name }} {{ worker.last_name }}</a>
+                              </span>
                             {% endfor %}
                           {% else %}
                             <span>No one assigned yet!</span>
