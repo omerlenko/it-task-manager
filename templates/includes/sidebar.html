@@ -11,20 +11,27 @@
         <li class="nav-item">
           <a class="nav-link text-white {% if request.resolver_match.url_name == "task-list" %} fw-bold {% endif %}" href="{% url "task_manager:task-list" %}">All Tasks</a>
         </li>
+        <li>
+          <div class="">
+            <a href="{% url "task_manager:task-create" %}" class="btn btn-primary">Add New Task</a>
+          </div>
+        </li>
       </div>
       <div>
         {% if user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link text-white" href="#">My profile</a>
           </li>
-          <li class="nav-item mb-4 btn btn-danger">
-            <form action="{% url "logout" %}" method="post">
-              {% csrf_token %}
-              <button type="submit" class="nav-link text-white">Log out</button>
-            </form>
+          <li class="nav-item mb-4">
+            <div class="">
+              <form action="{% url "logout" %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Log out</button>
+              </form>
+            </div>
           </li>
         {% else %}
-          <li class="nav-item mb-4 btn btn-primary">
+          <li class="nav-item btn-primary">
             <a class="nav-link text-white" href="{% url "login" %}">Log in</a>
           </li>
         {% endif %}
