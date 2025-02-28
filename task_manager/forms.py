@@ -1,7 +1,39 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from task_manager.models import Task, Tag
+from task_manager.models import Task, Tag, Worker, Position
+
+
+class WorkerCreationForm(UserCreationForm):
+    first_name = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    position = forms.ModelChoiceField(
+        queryset=Position.objects.all(),
+        required=True,
+        empty_label="Select your job position.",
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+    class Meta(UserCreationForm.Meta):
+        model = Worker
+        fields = UserCreationForm.Meta.fields + (
+            "first_name",
+            "last_name",
+            "position"
+        )
+
+
+class WorkerUpdateForm(UserChangeForm):
+    password = None
+
+    class Meta:
+        model = Worker
+        fields = UserCreationForm.Meta.fields + (
+            "first_name",
+            "last_name",
+            "position"
+        )
 
 
 class TaskForm(forms.ModelForm):
