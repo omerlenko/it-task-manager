@@ -53,19 +53,31 @@
                       </div>
 
                       <div class="card-body">
-                        <p class="card-text text-muted">{{ task.description }}</p>
+                        <p class="card-text">{{ task.description }}</p>
 
-                        <div>
+                        <div class="mt-5 mb-1">
+                          <span class="text-muted">Assignees: </span>
                           {% if task.assignees %}
                             {% for worker in task.assignees.all %}
-                              <span class="badge bg-light text-dark">{{ worker.first_name }} {{ worker.last_name }}</span>
+                              <span class="badge bg-light text-dark"> {{ worker.first_name }} {{ worker.last_name }}</span>
                             {% endfor %}
                           {% else %}
                             <span>No one assigned yet!</span>
                           {% endif %}
                         </div>
 
-                        <div class="mt-5 d-flex gap-2">
+                        <div class="mb-3">
+                          <span class="text-muted">#: </span>
+                          {% if task.tags %}
+                            {% for tag in task.tags.all %}
+                              <span class="badge bg-light text-dark">{{ tag.name }}</span>
+                            {% endfor %}
+                          {% else %}
+                            <span>No tags.</span>
+                          {% endif %}
+                        </div>
+
+                        <div class="d-flex gap-2">
 
                           {% if task.is_completed %}
                             <button type="submit" class="btn btn-outline-success me-auto" disabled>Completed</button>
