@@ -1,8 +1,10 @@
 {%  extends "base.html" %}
 
 {% block content %}
-  <div>
-    <p>Successfully logged out.</p>
-    <p><a href="{% url "login" %}">Log back in?</a></p>
+  <div class="container d-flex justify-content-center align-items-center mt-3">
+    <div class="card shadow-lg p-4" style="max-width: 400px; width: 100%;">
+      <p>Successfully logged out.</p>
+      <p><a href="{% url "login" %}" class="btn btn-primary w-100">Log back in?</a></p>
+    </div>
   </div>
 {% endblock %}
