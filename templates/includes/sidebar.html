@@ -1,41 +1,49 @@
 <nav class="col-md-3 col-lg-2 d-md-block bg-dark text-white sidebar vh-100">
   <div class="position-sticky">
-    <h3 class="p-3"><a href="{% url "task_manager:index" %}" class="nav-link text-white">Task Manager</a></h3>
+    <h3 class="p-3">
+      <a href="{% url "task_manager:index" %}" class="nav-link text-white">Task Manager</a>
+    </h3>
 
     <ul class="nav flex-column">
-
-      <div class="mb-4">
+      {% if user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link text-white {% if request.resolver_match.url_name == "index" %} fw-bold {% endif %}" href="{% url "task_manager:index" %}">Dashboard</a>
         </li>
         <li class="nav-item">
           <a class="nav-link text-white {% if request.resolver_match.url_name == "task-list" %} fw-bold {% endif %}" href="{% url "task_manager:task-list" %}">All Tasks</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link text-white {% if request.resolver_match.url_name == "worker-list" %} fw-bold {% endif %}" href="{% url "task_manager:worker-list" %}">Workers</a>
+        </li>
+
+
         <li>
           <div class="">
             <a href="{% url "task_manager:task-create" %}" class="btn btn-primary">Add New Task</a>
           </div>
         </li>
-      </div>
-      <div>
-        {% if user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link text-white" href="#">My profile</a>
-          </li>
-          <li class="nav-item mb-4">
-            <div class="">
-              <form action="{% url "logout" %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Log out</button>
-              </form>
+
+        <li class="nav-item mt-5">
+          <a class="nav-link text-white {% if request.resolver_match.url_name == "profile" %} fw-bold {% endif %}" href="{% url "task_manager:profile" %}">My profile</a>
+        </li>
+        <li class="nav-item">
+          <div class="">
+            <form action="{% url "logout" %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">Log out</button>
+            </form>
+          </div>
+        </li>
+
+      {% else %}
+
+          <li class="nav-item btn-primary">
+            <div class="nav-link">
+              <a href="{% url "login" %}" class="btn btn-primary w-100">Log in</a>
             </div>
           </li>
-        {% else %}
-          <li class="nav-item btn-primary">
-            <a class="nav-link text-white" href="{% url "login" %}">Log in</a>
-          </li>
-        {% endif %}
-      </div>
+
+      {% endif %}
 
     </ul>
   </div>
