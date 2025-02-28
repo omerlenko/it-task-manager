@@ -1,5 +1,7 @@
 from datetime import timedelta
 
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import When, Case, Value, IntegerField, Q
 from django.http import HttpResponse
@@ -8,10 +10,51 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import generic
 
-from task_manager.forms import TaskForm, TaskSearchForm
+from task_manager.forms import TaskForm, TaskSearchForm, WorkerCreationForm, WorkerUpdateForm
 from task_manager.models import Task, Worker
 
 
+class WorkerCreateView(generic.CreateView):
+    model = Worker
+    form_class = WorkerCreationForm
+    template_name = "registration/register.html"
+    success_url = reverse_lazy("task_manager:index")
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        login(self.request, self.object)
+        return response
+
+@login_required
+def profile(request):
+    user = request.user
+    context = {"worker": user}
+
+    return render(request, "task_manager/worker_detail.html", context)
+
+
+class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Worker
+    form_class = WorkerUpdateForm
+    template_name = "registration/register.html"
+    success_url = reverse_lazy("task_manager:profile")
+
+    def get_object(self):
+        return self.request.user
+
+
+class WorkerListView(generic.ListView):
+    model = Worker
+    context_object_name = "workers"
+
+
+class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Worker
+    template_name = "task_manager/worker_detail.html"
+    context_object_name = "worker"
+
+
+@login_required
 def index(request) -> HttpResponse:
     user_id = request.GET.get("user_id")
     if user_id:
