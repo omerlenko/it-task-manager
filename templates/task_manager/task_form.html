@@ -12,12 +12,14 @@
         </div>
         <div class="card-body">
             <form method="post">
-                {% csrf_token %}
-                  {% for field in form %}
-                  <div class="mb-3">
-                    {{ field|as_crispy_field }}
-                  </div>
-                  {% endfor %}
+              {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="mb-3">
+                      {{ field|as_crispy_field }}
+                    </div>
+                {% endfor %}
+
                 <div class="d-flex justify-content-between">
                     {% if task %}
                       <a href="{% url "task_manager:task-detail" pk=task.id %}" class="btn btn-secondary">Cancel</a>
