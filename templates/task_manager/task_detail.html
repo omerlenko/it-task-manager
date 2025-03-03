@@ -22,8 +22,7 @@
           <li class="list-group-item">
             <strong>Assigned workers:</strong>
             {% for user in task.assignees.all %}
-              <a href="#" class="badge bg-light text-dark text-decoration-none">{{ user.first_name }} {{ user.last_name }}</a>
-{#                {% url "worker-detail" pk=user.id %}#}
+              <a href="{% url "task_manager:worker-detail" user.id %}" class="badge bg-light text-dark text-decoration-none">{{ user.first_name }} {{ user.last_name }}</a>
             {% empty %}
               <span class="text-muted">No one assigned yet!</span>
             {% endfor %}
