@@ -47,6 +47,9 @@ class Project(models.Model):
     description = models.TextField(blank=True)
     teams = models.ManyToManyField(Team, related_name="projects")
 
+    def __str__(self):
+        return self.name
+
 
 class Task(models.Model):
     class Priority(models.TextChoices):
