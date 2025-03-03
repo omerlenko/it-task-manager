@@ -3,7 +3,8 @@ from asyncio import tasks
 from django.urls import path
 
 from task_manager.views import index, TaskListView, TaskDetailView, TaskCreateView, TaskUpdateView, TaskDeleteView, \
-    complete_task, WorkerCreateView, WorkerUpdateView, WorkerDetailView, profile, WorkerListView
+    complete_task, WorkerCreateView, WorkerUpdateView, WorkerDetailView, profile, WorkerListView, TeamListView, \
+    TeamCreateView, TeamUpdateView, TeamDetailView, TeamDeleteView
 
 urlpatterns = [
     path("", index, name="index"),
@@ -18,6 +19,11 @@ urlpatterns = [
     path("tasks/<int:pk>/update/", TaskUpdateView.as_view(), name="task-update"),
     path("tasks/<int:pk>/delete/", TaskDeleteView.as_view(), name="task-delete"),
     path("tasks/<int:pk>/complete/", complete_task, name="task-complete"),
+    path("teams/", TeamListView.as_view(), name="team-list"),
+    path("teams/<int:pk>/", TeamDetailView.as_view(), name="team-detail"),
+    path("teams/create/", TeamCreateView.as_view(), name="team-create"),
+    path("teams/<int:pk>/update/", TeamUpdateView.as_view(), name="team-update"),
+    path("teams/<int:pk>/delete/", TeamDeleteView.as_view(), name="team-delete"),
 ]
 
 app_name = "task_manager"
