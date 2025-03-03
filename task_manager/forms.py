@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from task_manager.models import Task, Tag, Worker, Position
+from task_manager.models import Task, Tag, Worker, Position, Team
 
 
 class WorkerCreationForm(UserCreationForm):
@@ -87,3 +87,15 @@ class TaskSearchForm(forms.Form):
         label="",
         widget=forms.TextInput(attrs={"placeholder": "Search tasks...", "class": "form-control"}),
     )
+
+
+class TeamForm(forms.ModelForm):
+    members = forms.ModelMultipleChoiceField(
+        required=True,
+        queryset=get_user_model().objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    class Meta:
+        model = Team
+        fields = "__all__"
