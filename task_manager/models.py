@@ -19,6 +19,15 @@ class Worker(AbstractUser):
     def __str__(self):
         return f"{self.first_name} {self.last_name}, {self.position.name if self.position else ""} "
 
+
+class Team(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    members = models.ManyToManyField(Worker, related_name="teams")
+
+    def __str__(self):
+        return self.name
+
+
 class TaskType(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
@@ -31,6 +40,12 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Project(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    teams = models.ManyToManyField(Team, related_name="projects")
 
 
 class Task(models.Model):
@@ -46,6 +61,7 @@ class Task(models.Model):
     is_completed = models.BooleanField(default=False)
     priority = models.CharField(max_length=1, choices=Priority, default=Priority.MEDIUM)
     task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks", null=True, blank=True)
     assignees = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="tasks")
     tags = models.ManyToManyField(Tag, blank=True, related_name="tasks")
 
