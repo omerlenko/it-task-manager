@@ -10,8 +10,8 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import generic
 
-from task_manager.forms import TaskForm, TaskSearchForm, WorkerCreationForm, WorkerUpdateForm
-from task_manager.models import Task, Worker
+from task_manager.forms import TaskForm, TaskSearchForm, WorkerCreationForm, WorkerUpdateForm, TeamForm
+from task_manager.models import Task, Worker, Team
 
 
 class WorkerCreateView(generic.CreateView):
@@ -212,3 +212,34 @@ def complete_task(request, pk):
     task.is_completed = True
     task.save()
     return redirect("task_manager:task-list")
+
+
+class TeamListView(LoginRequiredMixin, generic.ListView):
+    model = Team
+    context_object_name = "teams"
+
+
+class TeamDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Team
+    context_object_name = "team"
+
+
+class TeamCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Team
+    form_class = TeamForm
+
+    def get_success_url(self):
+        return reverse_lazy("task_manager:team-list")
+
+
+class TeamUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Team
+    form_class = TeamForm
+
+    def get_success_url(self):
+        return reverse_lazy("task_manager:team-detail", kwargs={"pk": self.object.pk})
+
+
+class TeamDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Team
+    success_url = reverse_lazy("task_manager:team-list")
