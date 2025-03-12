@@ -10,8 +10,8 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import generic
 
-from task_manager.forms import TaskForm, TaskSearchForm, WorkerCreationForm, WorkerUpdateForm, TeamForm
-from task_manager.models import Task, Worker, Team
+from task_manager.forms import TaskForm, TaskSearchForm, WorkerCreationForm, WorkerUpdateForm, TeamForm, ProjectForm
+from task_manager.models import Task, Worker, Team, Project
 
 
 class WorkerCreateView(generic.CreateView):
@@ -62,15 +62,36 @@ def index(request) -> HttpResponse:
     else:
         user = request.user
 
-    users = Worker.objects.all()
-    total_tasks = user.tasks.count()
-    pending_tasks = user.tasks.filter(is_completed=False).count()
-    completed_tasks = user.tasks.filter(is_completed=True).count()
+    project_id = request.GET.get("project_id")
+    if project_id:
+        selected_project = Project.objects.get(id=project_id)
+    else:
+        selected_project = ""
 
-    urgent_tasks = user.tasks.filter(priority="1").count()
-    high_tasks = user.tasks.filter(priority="2").count()
-    medium_tasks = user.tasks.filter(priority="3").count()
-    low_tasks = user.tasks.filter(priority="4").count()
+    teams = user.teams.all()
+    projects = list(Project.objects.filter(teams__in=teams).distinct())
+
+    for project in projects:
+        total = project.tasks.count()
+        if total > 0:
+            completed = project.tasks.filter(is_completed=True).count()
+            project.completion_percentage = round((completed / total) * 100)
+        else:
+            project.completion_percentage = 0
+
+    tasks = user.tasks.all()
+    if selected_project:
+        tasks = tasks.filter(project=selected_project)
+
+    users = Worker.objects.all()
+    total_tasks = tasks.count()
+    pending_tasks = tasks.filter(is_completed=False).count()
+    completed_tasks = tasks.filter(is_completed=True).count()
+
+    urgent_tasks = tasks.filter(priority="1").count()
+    high_tasks = tasks.filter(priority="2").count()
+    medium_tasks = tasks.filter(priority="3").count()
+    low_tasks = tasks.filter(priority="4").count()
 
     task_priority_counts = {
         "1": urgent_tasks,
@@ -79,19 +100,22 @@ def index(request) -> HttpResponse:
         "4": low_tasks,
     }
 
-    upcoming_deadlines = user.tasks.filter(deadline__lte=timezone.now() + timedelta(days=3), is_completed=False).order_by("deadline")
+    upcoming_deadlines = tasks.filter(deadline__lte=timezone.now() + timedelta(days=3), is_completed=False).order_by("deadline")
 
     today = timezone.now().date()
     start_of_the_week = today - timedelta(days=today.weekday())
     end_of_the_week = start_of_the_week + timedelta(days=6)
 
-    weekly_total_tasks = user.tasks.filter(deadline__range=[start_of_the_week, end_of_the_week]).count()
-    weekly_completed_tasks = user.tasks.filter(deadline__range=[start_of_the_week, end_of_the_week], is_completed=True).count()
+    weekly_total_tasks = tasks.filter(deadline__range=[start_of_the_week, end_of_the_week]).count()
+    weekly_completed_tasks = tasks.filter(deadline__range=[start_of_the_week, end_of_the_week], is_completed=True).count()
     weekly_completion_percentage = round(weekly_completed_tasks / weekly_total_tasks * 100 if weekly_total_tasks else 0)
 
     context = {
-        "selected_user": user.id,
+        "selected_user": user,
         "users": users,
+        "projects": projects,
+        "selected_project": selected_project,
+        "teams": teams,
         "total_tasks": total_tasks,
         "pending_tasks": pending_tasks,
         "completed_tasks": completed_tasks,
@@ -243,3 +267,28 @@ class TeamUpdateView(LoginRequiredMixin, generic.UpdateView):
 class TeamDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Team
     success_url = reverse_lazy("task_manager:team-list")
+
+
+class ProjectListView(LoginRequiredMixin, generic.ListView):
+    model = Project
+    context_object_name = "projects"
+
+
+class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Project
+    context_object_name = "project"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        completed_tasks = Project.objects.get(id=self.object.id).tasks.filter(is_completed=True)
+        context["completed_tasks"] = completed_tasks
+
+        return context
+
+
+class ProjectCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Project
+    form_class = ProjectForm
+
+    def get_success_url(self):
+        return reverse_lazy("task_manager:project-list")
