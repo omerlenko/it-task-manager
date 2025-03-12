@@ -4,7 +4,8 @@ from django.urls import path
 
 from task_manager.views import index, TaskListView, TaskDetailView, TaskCreateView, TaskUpdateView, TaskDeleteView, \
     complete_task, WorkerCreateView, WorkerUpdateView, WorkerDetailView, profile, WorkerListView, TeamListView, \
-    TeamCreateView, TeamUpdateView, TeamDetailView, TeamDeleteView
+    TeamCreateView, TeamUpdateView, TeamDetailView, TeamDeleteView, ProjectListView, ProjectDetailView, \
+    ProjectCreateView
 
 urlpatterns = [
     path("", index, name="index"),
@@ -24,6 +25,9 @@ urlpatterns = [
     path("teams/create/", TeamCreateView.as_view(), name="team-create"),
     path("teams/<int:pk>/update/", TeamUpdateView.as_view(), name="team-update"),
     path("teams/<int:pk>/delete/", TeamDeleteView.as_view(), name="team-delete"),
+    path("projects/", ProjectListView.as_view(), name="project-list"),
+    path("projects/<int:pk>", ProjectDetailView.as_view(), name="project-detail"),
+    path("projects/create/", ProjectCreateView.as_view(), name="project-create"),
 ]
 
 app_name = "task_manager"
