@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from task_manager.models import Task, Tag, Worker, Position, Team
+from task_manager.models import Task, Tag, Worker, Position, Team, Project
 
 
 class WorkerCreationForm(UserCreationForm):
@@ -98,4 +98,16 @@ class TeamForm(forms.ModelForm):
 
     class Meta:
         model = Team
+        fields = "__all__"
+
+
+class ProjectForm(forms.ModelForm):
+    teams = forms.ModelMultipleChoiceField(
+        required=True,
+        queryset=Team.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    class Meta:
+        model = Project
         fields = "__all__"
