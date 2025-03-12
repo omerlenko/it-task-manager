@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% load crispy_forms_filters %}
+
+  <div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">
+                {% if team %} Edit Team {% else %} Create New Project {% endif %}
+            </h4>
+        </div>
+        <div class="card-body">
+            <form method="post">
+              {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="mb-3">
+                      {{ field|as_crispy_field }}
+                    </div>
+                {% endfor %}
+
+                <div class="d-flex justify-content-between">
+                    {% if team %}
+                      <a href="{% url "task_manager:project-detail" team.id %}" class="btn btn-secondary">Cancel</a>
+                    {% else %}
+                      <a href="{% url "task_manager:project-list"%}" class="btn btn-secondary">Cancel</a>
+                    {% endif %}
+                    <button type="submit" class="btn btn-success">
+                        {% if team %} Update Project {% else %} Create Project {% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>
+
+{% endblock %}
