@@ -4,7 +4,7 @@
   <h1 class="text-center"><span class="me-2">👥</span>{{ team.name }}</h1>
   <div class="card shadow-sm mt-3">
     <div class="card-body">
-      <h5 class="card-title">Team Members:</h5>
+      <h5 class="card-title">👤Team Members:</h5>
       <ul class="list-group">
         {% for member in team.members.all %}
           <li class="list-group-item">
@@ -22,7 +22,7 @@
         {% endfor %}
       </ul>
       <div class="card shadow-sm mt-3">
-        <div class="card-header">Projects & Task Summary</div>
+        <div class="card-header">🔍Projects & Task Summary</div>
         <div class="card-body">
           <div class="mb-3">
             <strong>Projects:</strong>
@@ -45,7 +45,7 @@
           </div>
           <div>
             <strong>Task Summary:</strong>
-            <p class="text-muted">Total Tasks: {{ tasks.count }} | Pending: {{ pending_tasks.count }} | Completed: {{ completed_tasks.count }}</p>
+            <p class="text-muted">📝Total Tasks: {{ tasks.count }} | ⏳Pending: {{ pending_tasks.count }} | ✅Completed: {{ completed_tasks.count }}</p>
           </div>
         </div>
       </div>
