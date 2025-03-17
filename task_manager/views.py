@@ -43,7 +43,7 @@ class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
         return self.request.user
 
 
-class WorkerListView(generic.ListView):
+class WorkerListView(LoginRequiredMixin, generic.ListView):
     model = Worker
     context_object_name = "workers"
 
