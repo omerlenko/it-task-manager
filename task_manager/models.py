@@ -64,7 +64,7 @@ class Task(models.Model):
     is_completed = models.BooleanField(default=False)
     priority = models.CharField(max_length=1, choices=Priority, default=Priority.MEDIUM)
     task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks", null=True, blank=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks")
     assignees = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="tasks")
     tags = models.ManyToManyField(Tag, blank=True, related_name="tasks")
 
