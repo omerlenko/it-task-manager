@@ -5,8 +5,8 @@
   <div class="d-flex align-items-center justify-content-between">
     <h1 class="mb-0">📄 {{ project.name }}</h1>
     <div>
-      <a href="#" class="btn btn-outline-dark">Edit</a>
-      <a href="#" class="btn btn-outline-danger">Delete</a>
+      <a href="{% url "task_manager:project-update" project.id%}" class="btn btn-outline-dark">Edit</a>
+      <a href="{% url "task_manager:project-delete" project.id%}" class="btn btn-outline-danger">Delete</a>
     </div>
   </div>
 
@@ -17,7 +17,7 @@
   <div class="mb-4">
     <h5>Teams:</h5>
     {% if project.teams.all %}
-      {% for team in project.teams.all %}
+      {% for team in dynamic_teams %}
         <a href="{% url 'task_manager:team-detail' team.id %}" class="badge bg-primary fs-6 me-1 text-decoration-none">
           {{ team.name }}
         </a>
