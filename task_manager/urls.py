@@ -1,5 +1,3 @@
-from asyncio import tasks
-
 from django.urls import path
 
 from task_manager.views import index, TaskListView, TaskDetailView, TaskCreateView, TaskUpdateView, TaskDeleteView, \
