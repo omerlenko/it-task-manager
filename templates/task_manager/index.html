@@ -116,7 +116,7 @@
                   {% endif %}
                 </span>
                 <span class="fs-2 fw-bold">
-                  <a href="{% url "task_manager:task-list" %}?priority={{ priority }}&assignees={{ request.user.id }}" class="text-decoration-none text-dark">
+                  <a href="{% url "task_manager:task-list" %}?priority={{ priority }}&assignees={{ selected_user.id }}" class="text-decoration-none text-dark">
                     {{ count }}↗️
                   </a>
                 </span>
