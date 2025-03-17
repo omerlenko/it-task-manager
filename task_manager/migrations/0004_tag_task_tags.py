@@ -6,20 +6,30 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('task_manager', '0003_alter_task_priority'),
+        ("task_manager", "0003_alter_task_priority"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Tag',
+            name="Tag",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, unique=True)),
             ],
         ),
         migrations.AddField(
-            model_name='task',
-            name='tags',
-            field=models.ManyToManyField(blank=True, related_name='tasks', to='task_manager.tag'),
+            model_name="task",
+            name="tags",
+            field=models.ManyToManyField(
+                blank=True, related_name="tasks", to="task_manager.tag"
+            ),
         ),
     ]

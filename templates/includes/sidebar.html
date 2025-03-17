@@ -3,7 +3,6 @@
     <h3 class="p-3">
       <a href="{% url "task_manager:index" %}" class="nav-link text-white">Task Manager</a>
     </h3>
-
     <ul class="nav flex-column">
       {% if user.is_authenticated %}
         <li class="nav-item">
@@ -21,14 +20,11 @@
         <li class="nav-item">
           <a class="nav-link text-white {% if request.resolver_match.url_name == "worker-list" %} fw-bold {% endif %}" href="{% url "task_manager:worker-list" %}">Workers</a>
         </li>
-
-
         <li>
           <div class="">
             <a href="{% url "task_manager:task-create" %}" class="btn btn-primary">Add New Task</a>
           </div>
         </li>
-
         <li class="nav-item mt-5">
           <a class="nav-link text-white {% if request.resolver_match.url_name == "profile" %} fw-bold {% endif %}" href="{% url "task_manager:profile" %}">My profile</a>
         </li>
@@ -40,17 +36,13 @@
             </form>
           </div>
         </li>
-
       {% else %}
-
           <li class="nav-item btn-primary">
             <div class="nav-link">
               <a href="{% url "login" %}" class="btn btn-primary w-100">Log in</a>
             </div>
           </li>
-
       {% endif %}
-
     </ul>
   </div>
 </nav>

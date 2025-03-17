@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   {% block title %}
     <title>
@@ -19,26 +18,20 @@
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
-
 <body>
   <div class="container-fluid">
     <div class="row">
-
       {% block sidebar %}
         {% include "includes/sidebar.html" %}
       {% endblock %}
-
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
         {% block content %}
         {% endblock %}
-
         {% block pagination %}
           {% include "includes/pagination.html" %}
         {% endblock %}
       </main>
-
     </div>
   </div>
 </body>
-
 </html>

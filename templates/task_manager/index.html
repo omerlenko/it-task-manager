@@ -16,7 +16,6 @@
               {% endfor %}
             </select>
           </div>
-
           <div>
             <label for="project-select">📄Project:</label>
             <select name="project_id" id="project-select" class="form-select" onchange="this.form.submit()">
@@ -103,14 +102,12 @@
           <div class="card-body d-flex flex-column justify-content-center p-4">
             {% for priority, count in task_priority_counts.items %}
               <div class="d-flex  align-items-center mb-2">
-
                 <div class="circle me-3
                  {% if priority == "1" %} clr-danger
                  {% elif priority == "2" %} clr-warning
                  {% elif priority == "3" %} clr-primary
                  {% else %} clr-default
                  {% endif %}"></div>
-
                 <span class="fs-4 me-auto">
                   {% if priority  == "1" %}Urgent
                   {% elif priority == "2" %}High
@@ -118,13 +115,11 @@
                   {% else %} Low
                   {% endif %}
                 </span>
-
                 <span class="fs-2 fw-bold">
                   <a href="{% url "task_manager:task-list" %}?priority={{ priority }}&assignees={{ request.user.id }}" class="text-decoration-none text-dark">
                     {{ count }}↗️
                   </a>
                 </span>
-
               </div>
             {% empty %}
               <p class="fs-5 text-muted text-center">No priority tasks</p>
@@ -164,18 +159,15 @@
                 {% for project in projects_preview %}
                   <li class="list-group-item">
                     <div class="d-flex flex-column gap-2">
-
                       <div class="d-flex align-items-center">
                         <span class="me-2" style="font-size:1.5rem;">📄</span>
                         <a href="{% url "task_manager:project-detail" project.id %}" class="text-decoration-none text-dark fs-5">
                           {{ project.name }}
                         </a>
                       </div>
-
                       <div class="text-muted fs-6">
                         {{ project.description }}
                       </div>
-
                       {% if project.tasks.count > 0 %}
                         <div class="progress" style="height: 10px;">
                           <div class="progress-bar bg-success" role="progressbar" style="width: {{ project.completion_percentage }}%;" aria-valuenow="{{ project.completion_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
@@ -190,7 +182,6 @@
                     <li class="list-group-item text-muted text-center">No active projects</li>
                 {% endfor %}
               {% endwith %}
-
               {% if projects|length > 3 %}
                 <li class="list-group-item text-muted mt-auto">...and {{ projects|length|add:"-3" }} more</li>
               {% endif %}
@@ -204,7 +195,6 @@
           <div class="card-header text-center bg-light">
             <h3 class="mb-0">Your Teams</h3>
           </div>
-
           <div class="card-body p-3 d-flex flex-column h-100">
             <ul class="list-group flex-grow-1">
               {% with teams|slice:":3" as teams_preview %}
@@ -217,7 +207,6 @@
                       </a>
                       <span class="badge bg-secondary">{{ team.members.count }} members</span>
                     </div>
-
                     {% with team.members.all|slice:":3" as members_preview %}
                       <div class="d-flex align-items-center flex-wrap gap-2">
                         {% for member in members_preview %}
@@ -228,7 +217,6 @@
                             <span class="text-muted fs-6">{{ member.first_name }} {{ member.last_name }}</span>
                           </div>
                         {% endfor %}
-
                         {% if team.members.count > 3 %}
                           <span class="text-muted fs-6">...and {{ team.members.count|add:"-3" }} more</span>
                         {% endif %}
@@ -243,7 +231,6 @@
           </div>
         </div>
       </div>
-
       <div class="mt-4">
         <a href="{% url "task_manager:task-create" %}" class="btn btn-primary">Add New Task</a>
       </div>

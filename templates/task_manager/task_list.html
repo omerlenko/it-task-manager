@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block content %}
   <div class="container mt-4">
       <div class="row d-flex">
@@ -13,14 +12,12 @@
                 <form method="GET" class="mb-3">
                   <div class="input-group">
                     {{ search_form.search }}
-
                     <input type="hidden" name="is_completed" value="{{ selected_is_completed }}">
                     <input type="hidden" name="priority" value="{{ selected_priority }}">
                     {% for assignee in selected_assignees %}
                       <input type="hidden" name="assignees" value="{{ assignee }}">
                     {% endfor %}
                     <input type="hidden" name="sort" value="{{ selected_sort }}">
-
                     <button type="submit" class="btn btn-primary">Search</button>
                   </div>
                 </form>
@@ -36,7 +33,6 @@
                             📝 {{ task.name }}
                           </a>
                         </h5>
-
                         <div class="d-flex">
                           <span class="badge me-2
                               {% if task.priority == "1" %} bg-danger
@@ -45,15 +41,12 @@
                               {% else %} bg-secondary {% endif %}">
                             {{ task.get_priority_display }}
                           </span>
-
                           <span class="badge {% if task.is_completed %} bg-success {% else %} bg-info {% endif %} me-auto">
                             {% if task.is_completed %} Completed {% else %} Pending {% endif %}
                           </span>
-
                           <span class="badge bg-secondary">{{ task.deadline|date:"M d" }}</span>
                         </div>
                       </div>
-
                       <div class="card-body">
                         {% if task.description %}
                           <p class="card-text">{{ task.description }}</p>
@@ -72,7 +65,6 @@
                             <span>No one assigned yet!</span>
                           {% endif %}
                         </div>
-
                         <div class="mb-3">
                           <span class="text-muted">#: </span>
                           {% if task.tags %}
@@ -83,9 +75,7 @@
                             <span>No tags.</span>
                           {% endif %}
                         </div>
-
                         <div class="d-flex gap-2">
-
                           {% if task.is_completed %}
                             <button type="submit" class="btn btn-outline-success me-auto" disabled>Completed</button>
                           {% else %}
@@ -94,7 +84,6 @@
                               <button type="submit" class="btn btn-success">Complete</button>
                             </form>
                           {% endif %}
-
                           <a href="{% url "task_manager:task-update" pk=task.id %}" class="btn btn-outline-dark">Edit</a>
                           <a href="{% url "task_manager:task-delete" pk=task.id %}" class="btn btn-outline-danger">Delete</a>
                         </div>
@@ -118,12 +107,9 @@
             <h3 class="mb-0">Filters</h3>
           </div>
           <div class="card-body">
-
             <form method="GET" class="mb-3">
-
               <input type="hidden" name="sort" value="{{ selected_sort }}">
               <input type="hidden" name="search" value="{{ search_query }}">
-
               <div class="mb-3">
                 <select name="is_completed" class="form-select">
                   <option value="">Status</option>
@@ -131,7 +117,6 @@
                   <option value="True" {% if selected_is_completed == "True" %}selected{% endif %}>Completed</option>
                 </select>
               </div>
-
               <div class="mb-3">
                 <select name="priority" class="form-select">
                   <option value="">Priority</option>
@@ -141,7 +126,6 @@
                   <option value="1" {% if selected_priority == "1" %}selected{% endif %}>Urgent</option>
                 </select>
               </div>
-
               <div class="mb-3">
                 <label for="assignees" class="form-label">Assignees:</label>
                 <select name="assignees" multiple class="form-select">
@@ -152,7 +136,6 @@
                   {% endfor %}
                 </select>
               </div>
-
               <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">Apply</button>
                 <a href="{% url "task_manager:task-list" %}" class="btn btn-secondary">Reset</a>
@@ -166,7 +149,6 @@
             <h3 class="mb-0">Sort</h3>
           </div>
           <div class="card-body">
-
             <form method="GET" class="mb-3">
               <input type="hidden" name="search" value="{{ search_query }}">
               <input type="hidden" name="is_completed" value="{{ selected_is_completed }}">
@@ -174,7 +156,6 @@
               {% for assignee in selected_assignees %}
                 <input type="hidden" name="assignees" value="{{ assignee }}">
               {% endfor %}
-
               <div class="mb-3">
                 <select name="sort" class="form-select" onchange="this.form.submit()">
                   <option value="">Sort By</option>
@@ -186,11 +167,9 @@
                   <option value="deadline_desc" {% if selected_sort == "deadline_desc" %}selected{% endif %}>Deadline (Farthest first)</option>
                 </select>
               </div>
-
             </form>
           </div>
         </div>
-
         <div class="mt-4">
           <a href="{% url "task_manager:task-create" %}" class="btn btn-primary">Add New Task</a>
         </div>

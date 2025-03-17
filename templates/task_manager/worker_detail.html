@@ -1,30 +1,25 @@
 {% extends "base.html" %}
-
 {% block content %}
   <div class="container d-flex justify-content-center align-items-center mt-3">
     <div class="card card shadow-sm p-4" style="max-width: 500px; width: 100%;">
-
       <div class="text-center">
         <h2 class="mb-3">{{ worker.first_name }} {{ worker.last_name }}</h2>
         <p class="text-muted">
           <strong>Username:</strong> {{ worker.username }}
         </p>
       </div>
-
       <ul class="list-group list-group-flush">
         <li class="list-group-item"><strong>Position:</strong> {{ worker.position.name }}</li>
         <li class="list-group-item"><strong>Email:</strong> {{ worker.email }}</li>
         <li class="list-group-item"><strong>Date Joined:</strong> {{ worker.date_joined|date:"F d, Y" }}</li>
         <li class="list-group-item"><strong>Last Login:</strong> {{ worker.last_login|default:"Never" }}</li>
       </ul>
-
       <div class="mt-4 text-center">
         {% if user == worker %}
           <a href="{% url "task_manager:profile-update" %}" class="btn btn-primary">Edit Profile</a>
         {% endif %}
         <a href="{% url "task_manager:index" %}" class="btn btn-secondary">Back to Dashboard</a>
       </div>
-
     </div>
   </div>
 {% endblock %}

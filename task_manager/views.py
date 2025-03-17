@@ -10,7 +10,14 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import generic
 
-from task_manager.forms import TaskForm, TaskSearchForm, WorkerCreationForm, WorkerUpdateForm, TeamForm, ProjectForm
+from task_manager.forms import (
+    TaskForm,
+    TaskSearchForm,
+    WorkerCreationForm,
+    WorkerUpdateForm,
+    TeamForm,
+    ProjectForm,
+)
 from task_manager.models import Task, Worker, Team, Project
 
 
@@ -24,6 +31,7 @@ class WorkerCreateView(generic.CreateView):
         response = super().form_valid(form)
         login(self.request, self.object)
         return response
+
 
 @login_required
 def profile(request):
@@ -100,15 +108,23 @@ def index(request) -> HttpResponse:
         "4": low_tasks,
     }
 
-    upcoming_deadlines = tasks.filter(deadline__lte=timezone.now() + timedelta(days=3), is_completed=False).order_by("deadline")
+    upcoming_deadlines = tasks.filter(
+        deadline__lte=timezone.now() + timedelta(days=3), is_completed=False
+    ).order_by("deadline")
 
     today = timezone.now().date()
     start_of_the_week = today - timedelta(days=today.weekday())
     end_of_the_week = start_of_the_week + timedelta(days=6)
 
-    weekly_total_tasks = tasks.filter(deadline__range=[start_of_the_week, end_of_the_week]).count()
-    weekly_completed_tasks = tasks.filter(deadline__range=[start_of_the_week, end_of_the_week], is_completed=True).count()
-    weekly_completion_percentage = round(weekly_completed_tasks / weekly_total_tasks * 100 if weekly_total_tasks else 0)
+    weekly_total_tasks = tasks.filter(
+        deadline__range=[start_of_the_week, end_of_the_week]
+    ).count()
+    weekly_completed_tasks = tasks.filter(
+        deadline__range=[start_of_the_week, end_of_the_week], is_completed=True
+    ).count()
+    weekly_completion_percentage = round(
+        weekly_completed_tasks / weekly_total_tasks * 100 if weekly_total_tasks else 0
+    )
 
     context = {
         "selected_user": user,
@@ -154,8 +170,8 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
             search_query = form.cleaned_data["search"]
             if search_query:
                 queryset = queryset.filter(
-                    Q(name__icontains=search_query) |
-                    Q(description__icontains=search_query)
+                    Q(name__icontains=search_query)
+                    | Q(description__icontains=search_query)
                 )
 
         # Sorting
@@ -168,12 +184,14 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
             "status_desc": "-is_completed",
             "status_asc": "is_completed",
             "deadline_desc": "-deadline",
-
         }
         if sort_option == "deadline_asc":
             queryset = queryset.annotate(
                 expired=Case(
-                    When(deadline__lt=today, then=Value(1),),
+                    When(
+                        deadline__lt=today,
+                        then=Value(1),
+                    ),
                     default=Value(0),
                     output_field=IntegerField(),
                 )
@@ -316,7 +334,9 @@ class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
                 dynamic_teams.update(assignee.teams.all())
         context["dynamic_teams"] = dynamic_teams
 
-        completed_tasks = Project.objects.get(id=self.object.id).tasks.filter(is_completed=True)
+        completed_tasks = Project.objects.get(id=self.object.id).tasks.filter(
+            is_completed=True
+        )
         context["completed_tasks"] = completed_tasks
         return context
 
@@ -334,10 +354,11 @@ class ProjectUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = ProjectForm
 
     def get_success_url(self):
-        return reverse_lazy("task_manager:project-detail", kwargs={"pk": self.object.pk})
+        return reverse_lazy(
+            "task_manager:project-detail", kwargs={"pk": self.object.pk}
+        )
 
 
 class ProjectDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Project
     success_url = reverse_lazy("task_manager:project-list")
-

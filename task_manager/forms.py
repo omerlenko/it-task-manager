@@ -6,8 +6,12 @@ from task_manager.models import Task, Tag, Worker, Position, Team, Project
 
 
 class WorkerCreationForm(UserCreationForm):
-    first_name = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    last_name = forms.CharField(required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    first_name = forms.CharField(
+        required=True, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+    last_name = forms.CharField(
+        required=True, widget=forms.TextInput(attrs={"class": "form-control"})
+    )
     position = forms.ModelChoiceField(
         queryset=Position.objects.all(),
         required=True,
@@ -17,11 +21,7 @@ class WorkerCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = Worker
-        fields = UserCreationForm.Meta.fields + (
-            "first_name",
-            "last_name",
-            "position"
-        )
+        fields = UserCreationForm.Meta.fields + ("first_name", "last_name", "position")
 
 
 class WorkerUpdateForm(UserChangeForm):
@@ -29,11 +29,7 @@ class WorkerUpdateForm(UserChangeForm):
 
     class Meta:
         model = Worker
-        fields = UserCreationForm.Meta.fields + (
-            "first_name",
-            "last_name",
-            "position"
-        )
+        fields = UserCreationForm.Meta.fields + ("first_name", "last_name", "position")
 
 
 class TaskForm(forms.ModelForm):
@@ -53,7 +49,9 @@ class TaskForm(forms.ModelForm):
         model = Task
         fields = "__all__"
         widgets = {
-            "deadline": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+            "deadline": forms.DateInput(
+                attrs={"type": "date", "class": "form-control"}
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -65,7 +63,11 @@ class TaskForm(forms.ModelForm):
 
     def clean_tags(self):
         tags = self.cleaned_data.get("tags", "")
-        tag_names = [tag.strip().replace(" ", "-").lower() for tag in tags.split(",") if tag.strip()]
+        tag_names = [
+            tag.strip().replace(" ", "-").lower()
+            for tag in tags.split(",")
+            if tag.strip()
+        ]
         return tag_names
 
     def save(self, commit=True):
@@ -81,11 +83,14 @@ class TaskForm(forms.ModelForm):
 
         return task
 
+
 class TaskSearchForm(forms.Form):
     search = forms.CharField(
         required=False,
         label="",
-        widget=forms.TextInput(attrs={"placeholder": "Search tasks...", "class": "form-control"}),
+        widget=forms.TextInput(
+            attrs={"placeholder": "Search tasks...", "class": "form-control"}
+        ),
     )
 
 

@@ -6,13 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('task_manager', '0002_alter_worker_position'),
+        ("task_manager", "0002_alter_worker_position"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='task',
-            name='priority',
-            field=models.CharField(choices=[('1', 'Urgent'), ('2', 'High'), ('3', 'Medium'), ('4', 'Low')], default='3', max_length=1),
+            model_name="task",
+            name="priority",
+            field=models.CharField(
+                choices=[("1", "Urgent"), ("2", "High"), ("3", "Medium"), ("4", "Low")],
+                default="3",
+                max_length=1,
+            ),
         ),
     ]

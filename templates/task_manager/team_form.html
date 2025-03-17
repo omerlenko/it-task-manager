@@ -1,8 +1,6 @@
 {% extends "base.html" %}
-
 {% block content %}
   {% load crispy_forms_filters %}
-
   <div class="container mt-4">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
@@ -13,13 +11,11 @@
         <div class="card-body">
             <form method="post">
               {% csrf_token %}
-
                 {% for field in form %}
                     <div class="mb-3">
                       {{ field|as_crispy_field }}
                     </div>
                 {% endfor %}
-
                 <div class="d-flex justify-content-between">
                     {% if team %}
                       <a href="{% url "task_manager:team-detail" team.id %}" class="btn btn-secondary">Cancel</a>
@@ -34,5 +30,4 @@
         </div>
     </div>
   </div>
-
 {% endblock %}

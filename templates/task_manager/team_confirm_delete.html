@@ -1,11 +1,9 @@
 {% extends "base.html" %}
-
 {% block content %}
   <div class="container mt-5">
     <div class="card shadow-sm p-4">
       <h2 class="text-danger">Delete Team</h2>
       <p>Are you sure you want to delete <strong>{{ team.name }}</strong>?</p>
-
       <form method="post">
         {% csrf_token %}
         <div class="d-flex gap-3">

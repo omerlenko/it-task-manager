@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block content %}
 <div class="container mt-4">
   <h1 class="text-center">Projects</h1>
@@ -16,7 +15,6 @@
             <div class="text-muted fs-6 mb-3">
               {{ project.description }}
             </div>
-
             <div class="mb-3">
               <strong>Teams:</strong>
               {% for team in project.dynamic_teams %}
@@ -29,7 +27,6 @@
                 <span class="text-muted">No teams assigned</span>
               {% endfor %}
             </div>
-
             <div class="flex-grow-1">
               <strong>Tasks:</strong>
               <div class="d-flex flex-column gap-1 mt-2">

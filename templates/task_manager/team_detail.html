@@ -1,13 +1,10 @@
 {% extends "base.html" %}
-
 {% block content %}
 <div class="container mt-4">
   <h1 class="text-center"><span class="me-2">👥</span>{{ team.name }}</h1>
-
   <div class="card shadow-sm mt-3">
     <div class="card-body">
       <h5 class="card-title">Team Members:</h5>
-
       <ul class="list-group">
         {% for member in team.members.all %}
           <li class="list-group-item">
@@ -24,8 +21,6 @@
           <li class="list-group-item text-muted">No members in this team</li>
         {% endfor %}
       </ul>
-
-
       <div class="card shadow-sm mt-3">
         <div class="card-header">Projects & Task Summary</div>
         <div class="card-body">
@@ -54,12 +49,10 @@
           </div>
         </div>
       </div>
-
       <div class="d-flex gap-2 mt-4">
         <a href="{% url "task_manager:team-list" %}" class="btn btn-secondary">Back to Teams</a>
         <a href="{% url "task_manager:team-update" team.id %}" class="btn btn-outline-dark ms-auto">Edit</a>
         <a href="{% url "task_manager:team-delete" team.id %}" class="btn btn-outline-danger">Delete</a>
-
       </div>
     </div>
   </div>

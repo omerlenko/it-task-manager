@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block content %}
 <div class="container mt-4">
   <div class="d-flex align-items-center justify-content-between">
@@ -9,11 +8,8 @@
       <a href="{% url "task_manager:project-delete" project.id%}" class="btn btn-outline-danger">Delete</a>
     </div>
   </div>
-
   <hr>
-
   <p class="fs-5 text-muted">{{ project.description }}</p>
-
   <div class="mb-4">
     <h5>Teams:</h5>
     {% if project.teams.all %}
@@ -29,7 +25,6 @@
 
   <div class="mt-4">
     <h4>Tasks</h4>
-
     {% if project.tasks.all %}
       <div class="row">
         <div class="col-md-6">
@@ -47,7 +42,6 @@
             {% endfor %}
           </ul>
         </div>
-
         <div class="col-md-6">
           <h5 class="">✅ Completed</h5>
           <ul class="list-group">
@@ -72,7 +66,6 @@
       <p class="text-muted">No tasks assigned to this project yet.</p>
     {% endif %}
   </div>
-
   <div class="mt-4">
     <a href="{% url 'task_manager:project-list' %}" class="btn btn-secondary">Back to Projects</a>
   </div>
