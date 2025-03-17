@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-4">
-  <h1 class="text-center">{{ team.name }}</h1>
+  <h1 class="text-center"><span class="me-2">👥</span>{{ team.name }}</h1>
 
   <div class="card shadow-sm mt-3">
     <div class="card-body">
@@ -12,13 +12,48 @@
         {% for member in team.members.all %}
           <li class="list-group-item">
             <a class="text-decoration-none text-dark" href="{% url "task_manager:worker-detail" member.id %}">
-              {{ member.first_name }} {{ member.last_name }}
+              <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center me-2" style="width: 32px; height: 32px;">
+                  {{ member.first_name|first }}{{ member.last_name|first }}
+                </div>
+                <span class="text-muted fs-6">{{ member.first_name }} {{ member.last_name }}</span>
+              </div>
             </a>
           </li>
         {% empty %}
           <li class="list-group-item text-muted">No members in this team</li>
         {% endfor %}
       </ul>
+
+
+      <div class="card shadow-sm mt-3">
+        <div class="card-header">Projects & Task Summary</div>
+        <div class="card-body">
+          <div class="mb-3">
+            <strong>Projects:</strong>
+            {% if team.projects.all %}
+              <ul class="list-group list-group-flush">
+                {% for project in team.projects.all|slice:":3" %}
+                  <li class="list-group-item">
+                    <a class="text-decoration-none text-dark" href="{% url 'task_manager:project-detail' project.id %}">
+                      📄 {{ project.name }}
+                    </a>
+                  </li>
+                {% endfor %}
+                {% if team.projects.count > 3 %}
+                  <li class="list-group-item text-muted">...and {{ team.projects.count|add:"-3" }} more</li>
+                {% endif %}
+              </ul>
+            {% else %}
+              <span class="text-muted">No projects assigned</span>
+            {% endif %}
+          </div>
+          <div>
+            <strong>Task Summary:</strong>
+            <p class="text-muted">Total Tasks: {{ tasks.count }} | Pending: {{ pending_tasks.count }} | Completed: {{ completed_tasks.count }}</p>
+          </div>
+        </div>
+      </div>
 
       <div class="d-flex gap-2 mt-4">
         <a href="{% url "task_manager:team-list" %}" class="btn btn-secondary">Back to Teams</a>
