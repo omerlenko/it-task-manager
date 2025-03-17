@@ -17,7 +17,7 @@
             </div>
             <div class="mb-3">
               <strong>Teams:</strong>
-              {% for team in project.dynamic_teams %}
+              {% for team in project.teams.all %}
                 <span class="badge bg-primary me-1">
                   <a class="text-decoration-none text-white" href="{% url "task_manager:team-detail" team.id%}">
                     👥 {{ team.name }}
