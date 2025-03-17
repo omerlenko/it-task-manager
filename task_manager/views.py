@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import When, Case, Value, IntegerField, Q
+from django.db.models import When, Case, Value, IntegerField, Q, Prefetch
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -247,6 +247,18 @@ class TeamDetailView(LoginRequiredMixin, generic.DetailView):
     model = Team
     context_object_name = "team"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        tasks = Task.objects.filter(assignees__in=self.object.members.all()).distinct()
+        completed_tasks = tasks.filter(is_completed=True)
+        pending_tasks = tasks.filter(is_completed=False)
+
+        context["tasks"] = tasks
+        context["completed_tasks"] = completed_tasks
+        context["pending_tasks"] = pending_tasks
+        return context
+
 
 class TeamCreateView(LoginRequiredMixin, generic.CreateView):
     model = Team
@@ -272,6 +284,23 @@ class TeamDeleteView(LoginRequiredMixin, generic.DeleteView):
 class ProjectListView(LoginRequiredMixin, generic.ListView):
     model = Project
     context_object_name = "projects"
+    template_name = "task_manager/project_list.html"
+
+    def get_queryset(self):
+        queryset = Project.objects.prefetch_related(
+            Prefetch("tasks", queryset=Task.objects.prefetch_related("assignees")),
+        ).distinct()
+
+        projects = list(queryset)
+        for project in projects:
+            dynamic_teams = set()
+            for task in project.tasks.all():
+                for assignee in task.assignees.all():
+                    for team in assignee.teams.all():
+                        dynamic_teams.add(team)
+
+            project.dynamic_teams = list(dynamic_teams)
+        return projects
 
 
 class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
@@ -280,9 +309,15 @@ class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        dynamic_teams = set()
+        for task in self.get_object().tasks.all():
+            for assignee in task.assignees.all():
+                dynamic_teams.update(assignee.teams.all())
+        context["dynamic_teams"] = dynamic_teams
+
         completed_tasks = Project.objects.get(id=self.object.id).tasks.filter(is_completed=True)
         context["completed_tasks"] = completed_tasks
-
         return context
 
 
@@ -292,3 +327,17 @@ class ProjectCreateView(LoginRequiredMixin, generic.CreateView):
 
     def get_success_url(self):
         return reverse_lazy("task_manager:project-list")
+
+
+class ProjectUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Project
+    form_class = ProjectForm
+
+    def get_success_url(self):
+        return reverse_lazy("task_manager:project-detail", kwargs={"pk": self.object.pk})
+
+
+class ProjectDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Project
+    success_url = reverse_lazy("task_manager:project-list")
+
