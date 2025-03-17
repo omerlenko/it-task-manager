@@ -13,8 +13,8 @@
   <div class="mb-4">
     <h5>Teams:</h5>
     {% if project.teams.all %}
-      {% for team in dynamic_teams %}
-        <a href="{% url 'task_manager:team-detail' team.id %}" class="badge bg-primary fs-6 me-1 text-decoration-none">
+      {% for team in project.teams.all %}
+        <a href="{% url "task_manager:team-detail" team.id %}" class="badge bg-primary fs-6 me-1 text-decoration-none">
           {{ team.name }}
         </a>
       {% endfor %}
@@ -34,7 +34,7 @@
               {% if not task.is_completed %}
                 <li class="list-group-item d-flex align-items-center">
                   <span class="me-2">📝</span>
-                  <a href="{% url 'task_manager:task-detail' task.id %}" class="text-decoration-none text-dark">
+                  <a href="{% url "task_manager:task-detail" task.id %}" class="text-decoration-none text-dark">
                     {{ task.name }}
                   </a>
                 </li>
@@ -53,7 +53,7 @@
               {% for task in completed_tasks %}
                   <li class="list-group-item d-flex align-items-center text-muted">
                     <span class="me-2">✔</span>
-                    <a href="{% url 'task_manager:task-detail' task.id %}" class="text-decoration-none text-muted">
+                    <a href="{% url "task_manager:task-detail" task.id %}" class="text-decoration-none text-muted">
                       <del>{{ task.name }}</del>
                     </a>
                   </li>
@@ -67,7 +67,7 @@
     {% endif %}
   </div>
   <div class="mt-4">
-    <a href="{% url 'task_manager:project-list' %}" class="btn btn-secondary">Back to Projects</a>
+    <a href="{% url "task_manager:project-list" %}" class="btn btn-secondary">Back to Projects</a>
   </div>
 </div>
 {% endblock %}
