@@ -24,6 +24,17 @@
               <span class="text-muted">No one assigned yet!</span>
             {% endfor %}
           </li>
+          <li class="list-group-item">
+            <strong>Tags:</strong>
+            {% if task.tags %}
+              {% for tag in task.tags.all %}
+                <span class="text-muted">#{{ tag.name }}{% if not forloop.last %}, {% endif %}</span>
+              {% endfor %}
+            {% else %}
+              <span>No tags.</span>
+            {% endif %}
+          </li>
+
         </ul>
       </div>
       <div class="card-footer d-flex justify-content-end gap-2">
