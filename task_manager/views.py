@@ -4,7 +4,6 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import When, Case, Value, IntegerField, Q, Prefetch
-from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -62,87 +61,87 @@ class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
     context_object_name = "worker"
 
 
-@login_required
-def index(request) -> HttpResponse:
-    user_id = request.GET.get("user_id")
-    if user_id:
-        user = get_object_or_404(Worker, id=user_id)
-    else:
-        user = request.user
+class DashboardView(LoginRequiredMixin, generic.TemplateView):
+    template_name = "task_manager/index.html"
 
-    project_id = request.GET.get("project_id")
-    if project_id:
-        selected_project = Project.objects.get(id=project_id)
-    else:
-        selected_project = ""
+    def get_selected_user(self):
+        user_id = self.request.GET.get("user_id")
+        if user_id:
+            return get_object_or_404(Worker, id=user_id)
+        return self.request.user
 
-    teams = user.teams.all()
-    projects = list(Project.objects.filter(teams__in=teams).distinct())
+    def get_selected_project(self):
+        project_id = self.request.GET.get("project_id")
+        if project_id:
+            return Project.objects.get(id=project_id)
+        return None
 
-    for project in projects:
-        total = project.tasks.count()
-        if total > 0:
-            completed = project.tasks.filter(is_completed=True).count()
-            project.completion_percentage = round((completed / total) * 100)
-        else:
-            project.completion_percentage = 0
+    def get_project_completion(self, projects):
+        projects_list = list(projects)
+        for project in projects_list:
+            total = project.tasks.count()
+            if total > 0:
+                completed = project.tasks.filter(is_completed=True).count()
+                project.completion_percentage = round((completed / total) * 100)
+            else:
+                project.completion_percentage = 0
+        return projects_list
 
-    tasks = user.tasks.all()
-    if selected_project:
-        tasks = tasks.filter(project=selected_project)
+    def get_task_statistics(self, tasks):
+        return {
+            "total_tasks": tasks.count(),
+            "pending_tasks": tasks.filter(is_completed=False).count(),
+            "completed_tasks": tasks.filter(is_completed=True).count(),
+            "urgent_tasks": tasks.filter(priority="1").count(),
+            "high_tasks": tasks.filter(priority="2").count(),
+            "medium_tasks": tasks.filter(priority="3").count(),
+            "low_tasks": tasks.filter(priority="4").count(),
+        }
 
-    users = Worker.objects.all()
-    total_tasks = tasks.count()
-    pending_tasks = tasks.filter(is_completed=False).count()
-    completed_tasks = tasks.filter(is_completed=True).count()
+    def get_weekly_statistics(self, tasks):
+        today = timezone.now().date()
+        start_of_the_week = today - timedelta(days=today.weekday())
+        end_of_the_week = start_of_the_week + timedelta(days=6)
 
-    urgent_tasks = tasks.filter(priority="1").count()
-    high_tasks = tasks.filter(priority="2").count()
-    medium_tasks = tasks.filter(priority="3").count()
-    low_tasks = tasks.filter(priority="4").count()
+        weekly_total_tasks = tasks.filter(
+            deadline__range=[start_of_the_week, end_of_the_week]
+        ).count()
+        weekly_completed_tasks = tasks.filter(
+            deadline__range=[start_of_the_week, end_of_the_week], is_completed=True
+        ).count()
+        percentage = round(
+            weekly_completed_tasks / weekly_total_tasks * 100 if weekly_total_tasks else 0
+        )
+        return weekly_total_tasks, weekly_completed_tasks, percentage
 
-    task_priority_counts = {
-        "1": urgent_tasks,
-        "2": high_tasks,
-        "3": medium_tasks,
-        "4": low_tasks,
-    }
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.get_selected_user()
+        selected_project = self.get_selected_project()
+        teams = user.teams.all()
+        context["selected_user"] = user
+        context["users"] = Worker.objects.all()
+        context["teams"] = teams
 
-    upcoming_deadlines = tasks.filter(
-        deadline__lte=timezone.now() + timedelta(days=3), is_completed=False
-    ).order_by("deadline")
+        projects = Project.objects.filter(teams__in=teams).distinct()
+        context["projects"] = projects
+        context["selected_project"] = selected_project if selected_project else ""
 
-    today = timezone.now().date()
-    start_of_the_week = today - timedelta(days=today.weekday())
-    end_of_the_week = start_of_the_week + timedelta(days=6)
+        tasks = user.tasks.all()
+        if selected_project:
+            tasks = tasks.filter(project=selected_project)
+        context.update(self.get_task_statistics(tasks))
+        context["upcoming_deadlines"] = tasks.filter(
+            deadline__lte=timezone.now() + timedelta(days=3), is_completed=False
+        ).order_by("deadline")
 
-    weekly_total_tasks = tasks.filter(
-        deadline__range=[start_of_the_week, end_of_the_week]
-    ).count()
-    weekly_completed_tasks = tasks.filter(
-        deadline__range=[start_of_the_week, end_of_the_week], is_completed=True
-    ).count()
-    weekly_completion_percentage = round(
-        weekly_completed_tasks / weekly_total_tasks * 100 if weekly_total_tasks else 0
-    )
+        weekly_total, weekly_completed, weekly_percentage = (
+            self.get_weekly_statistics(tasks))
+        context["weekly_total_tasks"] = weekly_total
+        context["weekly_completed_tasks"] = weekly_completed
+        context["weekly_completion_percentage"] = weekly_percentage
 
-    context = {
-        "selected_user": user,
-        "users": users,
-        "projects": projects,
-        "selected_project": selected_project,
-        "teams": teams,
-        "total_tasks": total_tasks,
-        "pending_tasks": pending_tasks,
-        "completed_tasks": completed_tasks,
-        "upcoming_deadlines": upcoming_deadlines,
-        "task_priority_counts": task_priority_counts,
-        "weekly_total_tasks": weekly_total_tasks,
-        "weekly_completed_tasks": weekly_completed_tasks,
-        "weekly_completion_percentage": weekly_completion_percentage,
-    }
-
-    return render(request, "task_manager/index.html", context)
+        return context
 
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
