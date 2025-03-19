@@ -1,7 +1,6 @@
 from django.urls import path
 
 from task_manager.views import (
-    index,
     TaskListView,
     TaskDetailView,
     TaskCreateView,
@@ -23,10 +22,11 @@ from task_manager.views import (
     ProjectCreateView,
     ProjectUpdateView,
     ProjectDeleteView,
+    DashboardView,
 )
 
 urlpatterns = [
-    path("", index, name="index"),
+    path("", DashboardView.as_view(), name="index"),
     path("register/", WorkerCreateView.as_view(), name="register"),
     path("profile/", profile, name="profile"),
     path("profile/update/", WorkerUpdateView.as_view(), name="profile-update"),
