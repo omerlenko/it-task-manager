@@ -14,6 +14,7 @@
                     {{ search_form.search }}
                     <input type="hidden" name="is_completed" value="{{ selected_is_completed }}">
                     <input type="hidden" name="priority" value="{{ selected_priority }}">
+                    <input type="hidden" name="project" value="{{ selected_project }}">
                     {% for assignee in selected_assignees %}
                       <input type="hidden" name="assignees" value="{{ assignee }}">
                     {% endfor %}
@@ -127,6 +128,14 @@
                 </select>
               </div>
               <div class="mb-3">
+                <select name="project" class="form-select">
+                  <option value="">Project</option>
+                  {% for project in projects %}
+                    <option value="{{ project.id }}" {% if selected_project == project.id|stringformat:"s" %}selected{% endif %}>{{ project.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="mb-3">
                 <label for="assignees" class="form-label">Assignees:</label>
                 <select name="assignees" multiple class="form-select">
                   {% for user in users %}
@@ -153,6 +162,7 @@
               <input type="hidden" name="search" value="{{ search_query }}">
               <input type="hidden" name="is_completed" value="{{ selected_is_completed }}">
               <input type="hidden" name="priority" value="{{ selected_priority }}">
+              <input type="hidden" name="project" value="{{ selected_project }}">
               {% for assignee in selected_assignees %}
                 <input type="hidden" name="assignees" value="{{ assignee }}">
               {% endfor %}
