@@ -303,22 +303,6 @@ class ProjectListView(LoginRequiredMixin, generic.ListView):
     context_object_name = "projects"
     template_name = "task_manager/project_list.html"
 
-    def get_queryset(self):
-        queryset = Project.objects.prefetch_related(
-            Prefetch("tasks", queryset=Task.objects.prefetch_related("assignees")),
-        ).distinct()
-
-        projects = list(queryset)
-        for project in projects:
-            dynamic_teams = set()
-            for task in project.tasks.all():
-                for assignee in task.assignees.all():
-                    for team in assignee.teams.all():
-                        dynamic_teams.add(team)
-
-            project.dynamic_teams = list(dynamic_teams)
-        return projects
-
 
 class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
     model = Project
@@ -326,13 +310,6 @@ class ProjectDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        dynamic_teams = set()
-        for task in self.get_object().tasks.all():
-            for assignee in task.assignees.all():
-                dynamic_teams.update(assignee.teams.all())
-        context["dynamic_teams"] = dynamic_teams
-
         completed_tasks = Project.objects.get(id=self.object.id).tasks.filter(
             is_completed=True
         )
