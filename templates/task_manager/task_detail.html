@@ -13,6 +13,7 @@
       <div class="card-body">
         <p class="text-muted">{{ task.description }}</p>
         <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Project:</strong> {{ task.project }}</li>
           <li class="list-group-item"><strong>Priority:</strong> {{ task.get_priority_display }}</li>
           <li class="list-group-item"><strong>Task Type:</strong> {{ task.task_type }}</li>
           <li class="list-group-item"><strong>Deadline:</strong> {{ task.deadline|date:"F j, Y" }}</li>
