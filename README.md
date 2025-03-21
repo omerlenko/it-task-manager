@@ -3,6 +3,39 @@
 ## Overview
 This portfolio project is a comprehensive task manager for an IT company, built with Django. It addresses real-world challenges in team task management and includes a variety of features to facilitate efficient workflow and collaboration. The application allows team members to create, assign, and complete tasks, while also providing a dynamic dashboard for managers to view key metrics, filter tasks, and assess team workloads.
 
+## Check it out!
+[Task Manager project deployed to Render]("link here")
+
+## Installation
+
+### Prerequisites
+- Python 3.x
+
+### Steps to Set Up the Project
+
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/omerlenko/it-task-manager.git
+   cd it-task-manager
+   
+2. **Create and activate a virtual environment**:
+   ```sh
+   python -m venv venv
+   source venv/bin/activate  # On macOS/Linux
+   venv\Scripts\activate     # On Windows
+   ```
+
+3. **Install dependencies:**
+   ```sh
+   pip install -r requirements.txt
+   ```
+
+4. **Run the Development Server:**
+   ```sh
+   python manage.py runserver
+   ```
+   Access the project at `http://127.0.0.1:8000/`.
+
 ## Key Features
 
 ### Custom User & Role Management
@@ -38,61 +71,10 @@ This portfolio project is a comprehensive task manager for an IT company, built 
 - Consistent spacing, equal card heights, and neat alignment for a professional appearance.
 - Pagination that preserves filtering, sorting, and search parameters.
 
-## Installation
-
-### Prerequisites
-- Python 3.x
-- Django
-- A virtual environment tool (e.g., `venv` or `virtualenv`)
-
-### Steps to Set Up the Project
-
-1. **Clone the repository:**
-   ```sh
-   git clone https://github.com/omerlenko/it-task-manager.git
-   cd it-task-manager
-   
-2. **Create and activate a virtual environment**:
-   ```sh
-   python -m venv venv
-   source venv/bin/activate  # On macOS/Linux
-   venv\Scripts\activate     # On Windows
-   ```
-
-3. **Install dependencies:**
-   ```sh
-   pip install -r requirements.txt
-   ```
-
-4. **Set up environment variables**:
-   - Create a `.env` file in the project root and add:
-     ```sh
-     SECRET_KEY='your-secret-key-here'
-     ```
-
-5. **Apply Migrations:**
-   ```sh
-   python manage.py migrate
-   ```
-
-6. **Create a Superuser:**
-   ```sh
-   python manage.py createsuperuser
-   ```
-
-7. **Run the Development Server:**
-   ```sh
-   python manage.py runserver
-   ```
-   Access the project at `http://127.0.0.1:8000/`.
-
-## Dependencies
-All required dependencies are listed in the `requirements.txt` file. Install them with:
-```sh
-pip install -r requirements.txt
-```
-
 ## Tech Stack
 - **Backend:** Django (Python)
 - **Frontend:** Bootstrap (HTML, CSS)
-- **Database:** SQLite (default), with options to switch to PostgreSQL or MySQL
+- **Database:** SQLite, PostgreSQL
+
+## Demo
+![Website Interface](demo.png)
