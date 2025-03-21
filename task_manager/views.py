@@ -155,6 +155,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
         is_completed = self.request.GET.get("is_completed")
         priority = self.request.GET.get("priority")
         assignees = [a for a in self.request.GET.getlist("assignees") if a]
+        project = self.request.GET.get("project")
 
         if is_completed:
             queryset = queryset.filter(is_completed=is_completed)
@@ -162,6 +163,8 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
             queryset = queryset.filter(priority=priority)
         if assignees:
             queryset = queryset.filter(assignees__id__in=assignees).distinct()
+        if project:
+            queryset = queryset.filter(project=project)
 
         # Search
         form = TaskSearchForm(self.request.GET)
@@ -207,6 +210,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
         context["selected_is_completed"] = self.request.GET.get("is_completed", "")
         context["selected_priority"] = self.request.GET.get("priority", "")
         context["selected_assignees"] = self.request.GET.getlist("assignees", "")
+        context["selected_project"] = self.request.GET.get("project", "")
 
         search = self.request.GET.get("search", "")
         context["search_form"] = TaskSearchForm(initial={"search": search})
@@ -214,6 +218,8 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 
         context["users"] = Worker.objects.all()
         context["selected_sort"] = self.request.GET.get("sort", "")
+
+        context["projects"] = Project.objects.all()
 
         return context
 
