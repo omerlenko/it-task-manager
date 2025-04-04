@@ -124,7 +124,7 @@ class DashboardView(LoginRequiredMixin, generic.TemplateView):
         context["teams"] = teams
 
         projects = Project.objects.filter(teams__in=teams).distinct()
-        context["projects"] = projects
+        context["projects"] = self.get_project_completion(projects)
         context["selected_project"] = selected_project if selected_project else ""
 
         tasks = user.tasks.all()
