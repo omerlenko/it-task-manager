@@ -20,7 +20,7 @@ class Worker(AbstractUser):
         verbose_name_plural = "workers"
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}, {self.position.name if self.position else ""} "
+        return f"{self.first_name} {self.last_name}, {self.position.name if self.position else ''} "
 
 
 class Team(models.Model):
