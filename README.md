@@ -4,7 +4,11 @@
 This portfolio project is a comprehensive task manager for an IT company, built with Django. It addresses real-world challenges in team task management and includes a variety of features to facilitate efficient workflow and collaboration. The application allows team members to create, assign, and complete tasks, while also providing a dynamic dashboard for managers to view key metrics, filter tasks, and assess team workloads.
 
 ## Check it out!
-[Task Manager project deployed to Render]("link here")
+[IT Task Manager project deployed to Render](https://it-task-manager-o7xl.onrender.com/)
+
+### Test User:
+- Login: admin
+- Password: qwerty
 
 ## Installation
 
