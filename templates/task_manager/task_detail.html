@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container mt-4">
+      <div class="card shadow-sm h-100 border-0">
+      <div class="card-header d-flex justify-content-between align-items-center bg-light">
+        <h3 class="mb-0">{{ task.name }}</h3>
+        {% if task.is_completed %}
+          <span class="badge bg-success">Completed</span>
+        {% else %}
+          <span class="badge bg-warning text-dark">Pending</span>
+        {% endif %}
+      </div>
+      <div class="card-body">
+        <p class="text-muted">{{ task.description }}</p>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Project:</strong> {{ task.project }}</li>
+          <li class="list-group-item"><strong>Priority:</strong> {{ task.get_priority_display }}</li>
+          <li class="list-group-item"><strong>Task Type:</strong> {{ task.task_type }}</li>
+          <li class="list-group-item"><strong>Deadline:</strong> {{ task.deadline|date:"F j, Y" }}</li>
+          <li class="list-group-item">
+            <strong>Assigned workers:</strong>
+            {% for user in task.assignees.all %}
+              <a href="{% url "task_manager:worker-detail" user.id %}" class="badge bg-light text-dark text-decoration-none">{{ user.first_name }} {{ user.last_name }}</a>
+            {% empty %}
+              <span class="text-muted">No one assigned yet!</span>
+            {% endfor %}
+          </li>
+          <li class="list-group-item">
+            <strong>Tags:</strong>
+            {% if task.tags %}
+              {% for tag in task.tags.all %}
+                <span class="text-muted">#{{ tag.name }}{% if not forloop.last %}, {% endif %}</span>
+              {% endfor %}
+            {% else %}
+              <span>No tags.</span>
+            {% endif %}
+          </li>
+
+        </ul>
+      </div>
+      <div class="card-footer d-flex justify-content-end gap-2">
+        <a href="{% url "task_manager:task-update" pk=task.id %}" class="btn btn-primary">Edit</a>
+        <a href="{% url "task_manager:task-delete" pk=task.id %}" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+    <div class="mt-3">
+      <a href="{% url "task_manager:task-list" %}" class="btn btn-outline-secondary">Back to Task List</a>
+    </div>
+  </div>
+{% endblock %}
